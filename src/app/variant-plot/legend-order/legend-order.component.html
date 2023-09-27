@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Change Legend Order</h1>
+<div mat-dialog-content>
+  <h5>Current Legend Order</h5>
+  <mat-list cdkDropList (cdkDropListDropped)="drop($event)">
+    <mat-list-item *ngFor="let i of legendOrder" cdkDrag>
+      {{i}}
+    </mat-list-item>
+  </mat-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="legendOrder" cdkFocusInitial>Save</button>
+</div>

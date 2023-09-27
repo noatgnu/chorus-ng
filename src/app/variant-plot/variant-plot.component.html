@@ -1,12 +1,27 @@
 <mat-card>
-  <mat-card-header>
-    <mat-card-title>Variant Plot</mat-card-title>
-    <mat-card-subtitle>The following plot combine Alphamissense data and user input</mat-card-subtitle>
+  <mat-card-header style="width: 100%">
+    <div style="display: flex; justify-content: start">
+      <div style="flex-grow: 1">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </div>
+      <div style="flex-grow: 1">
+        <mat-card-title>Variant Plot</mat-card-title>
+        <mat-card-subtitle>The following plot combine Alphamissense data and user input</mat-card-subtitle>
+      </div>
+
+    </div>
+
   </mat-card-header>
   <mat-card-content>
-    <plotly-plot></plotly-plot>
     <plotly-plot [data]="graphData" [layout]="graphLayout" [updateOnDataChange]="true" [updateOnLayoutChange]="true"
-                 [useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}"
+                 [useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}" (legendClick)="legendClickHandler($event)"
     ></plotly-plot>
   </mat-card-content>
 </mat-card>
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="openLegendOrder()">Legend Order</button>
+  <button mat-menu-item>Legend Rename</button>
+</mat-menu>

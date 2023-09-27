@@ -15,13 +15,19 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatCardModule} from "@angular/material/card";
 import {MatInputModule} from "@angular/material/input";
 import { VariantPlotComponent } from './variant-plot/variant-plot.component';
+import { LegendOrderComponent } from './variant-plot/legend-order/legend-order.component';
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatListModule} from "@angular/material/list";
+import {CdkDrag, CdkDropList} from "@angular/cdk/drag-drop";
+import {MatMenuModule} from "@angular/material/menu";
 
 PlotlyModule.plotlyjs = PlotlyJS;
 @NgModule({
   declarations: [
     AppComponent,
     ProteinSelectionComponent,
-    VariantPlotComponent
+    VariantPlotComponent,
+    LegendOrderComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +41,12 @@ PlotlyModule.plotlyjs = PlotlyJS;
     ReactiveFormsModule,
     FormsModule,
     MatCardModule,
-    MatInputModule
+    MatInputModule,
+    MatDialogModule,
+    MatListModule,
+    CdkDropList,
+    CdkDrag,
+    MatMenuModule
   ],
   providers: [],
   bootstrap: [AppComponent]
