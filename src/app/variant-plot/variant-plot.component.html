@@ -1,0 +1,12 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Variant Plot</mat-card-title>
+    <mat-card-subtitle>The following plot combine Alphamissense data and user input</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <plotly-plot></plotly-plot>
+    <plotly-plot [data]="graphData" [layout]="graphLayout" [updateOnDataChange]="true" [updateOnLayoutChange]="true"
+                 [useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}"
+    ></plotly-plot>
+  </mat-card-content>
+</mat-card>
