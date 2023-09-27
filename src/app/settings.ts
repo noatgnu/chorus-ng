@@ -18,4 +18,8 @@ export class Settings {
   selected: any = {}
 
   legendOrder: string[] = []
+
+  legendRename: any = {
+
+  }
 }

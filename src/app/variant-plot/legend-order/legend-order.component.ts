@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
+import {SettingsService} from "../../settings.service";
 
 @Component({
   selector: 'app-legend-order',
@@ -9,7 +10,7 @@ import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 export class LegendOrderComponent {
   @Input() legendOrder: string[] = []
 
-  constructor() { }
+  constructor(public settings: SettingsService) { }
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.legendOrder, event.previousIndex, event.currentIndex)

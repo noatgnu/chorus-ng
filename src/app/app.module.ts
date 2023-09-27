@@ -20,6 +20,8 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {MatListModule} from "@angular/material/list";
 import {CdkDrag, CdkDropList} from "@angular/cdk/drag-drop";
 import {MatMenuModule} from "@angular/material/menu";
+import { LegendRenameComponent } from './variant-plot/legend-rename/legend-rename.component';
+import { ColorPickerComponent } from './variant-plot/color-picker/color-picker.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 @NgModule({
@@ -27,7 +29,9 @@ PlotlyModule.plotlyjs = PlotlyJS;
     AppComponent,
     ProteinSelectionComponent,
     VariantPlotComponent,
-    LegendOrderComponent
+    LegendOrderComponent,
+    LegendRenameComponent,
+    ColorPickerComponent
   ],
   imports: [
     BrowserModule,

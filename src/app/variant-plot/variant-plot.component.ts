@@ -5,6 +5,7 @@ import {Settings} from "../settings";
 import {SettingsService} from "../settings.service";
 import {MatDialog} from "@angular/material/dialog";
 import {LegendOrderComponent} from "./legend-order/legend-order.component";
+import {LegendRenameComponent} from "./legend-rename/legend-rename.component";
 
 @Component({
   selector: 'app-variant-plot',
@@ -87,6 +88,11 @@ export class VariantPlotComponent {
           yaxis: 'y',
           visible: true,
         }
+        if (!this.settings.settings.legendRename[v.pathogenicity]) {
+          this.settings.settings.legendRename[v.pathogenicity] = v.pathogenicity
+        } else {
+          temp[v.pathogenicity].name = this.settings.settings.legendRename[v.pathogenicity].slice()
+        }
         if (!this.settings.settings.legendOrder.includes(v.pathogenicity)) {
           this.settings.settings.legendOrder.push(v.pathogenicity)
         }
@@ -107,6 +113,11 @@ export class VariantPlotComponent {
             hoverinfo: 'skip',
             yaxis: 'y',
             visible: true
+          }
+          if (!this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"]) {
+            this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"] = v.pathogenicity + " only in Alphamissense"
+          } else {
+            temp[v.pathogenicity + " only in Alphamissense"].name = this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"].slice()
           }
           if (!this.settings.settings.legendOrder.includes(v.pathogenicity + " only in Alphamissense")) {
             this.settings.settings.legendOrder.push(v.pathogenicity + " only in Alphamissense")
@@ -248,6 +259,17 @@ export class VariantPlotComponent {
           this.settings.settings.legendOrder = data
           this.drawGraph()
         }
+      }
+    })
+  }
+
+  openLegendRename() {
+    const ref = this.dialog.open(LegendRenameComponent, {width: "50vw"})
+    ref.componentInstance.legend= Object.assign({}, this.settings.settings.legendRename)
+    ref.afterClosed().subscribe((data) => {
+      if (data) {
+        this.settings.settings.legendRename = data
+        this.drawGraph()
       }
     })
   }
