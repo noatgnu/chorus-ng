@@ -1,1 +1,15 @@
-<p>color-picker works!</p>
+<h1 mat-dialog-title>Change Legend Name</h1>
+<div mat-dialog-content>
+  <div *ngFor="let c of colorArray" style="display: flex">
+    <div>
+      {{c.legend}}
+    </div>
+    <div>
+      <ngx-colors ngx-colors-trigger [(ngModel)]="c.color"></ngx-colors>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="colorArray" cdkFocusInitial>Save</button>
+</div>

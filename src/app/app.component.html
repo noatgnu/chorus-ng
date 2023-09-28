@@ -5,14 +5,27 @@
     </button>
     <span>Chorus</span>
     <span class="spacer"></span>
+    <button aria-label="Save file" mat-icon-button (click)="saveFile()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button aria-label="Restore file" mat-icon-button (click)="reloadFile.click()">
+      <mat-icon>restore</mat-icon>
+    </button>
   </mat-toolbar>
 </div>
 
 <div style="display: flex; justify-content: space-around; margin: 20px">
   <div>
-    <app-protein-selection (search)="searchForVariantUsingProtein($event)"></app-protein-selection>
+    <div>
+      <app-protein-selection (search)="searchForVariantUsingProtein($event)"></app-protein-selection>
+    </div>
+    <div style="margin-top: 20px;">
+      <app-file-input (saveFile)="fileHandler($event)"></app-file-input>
+    </div>
   </div>
   <div style="flex-grow: 5; margin-left: 20px; height: 100%">
     <app-variant-plot *ngIf="results.length > 0" [data]="results[0]"></app-variant-plot>
   </div>
 </div>
+
+<input type="file" id="file" #reloadFile hidden style="display: none" (change)="reloadFileHandler($event)">

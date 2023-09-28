@@ -1,3 +1,5 @@
+import {ImportedFile} from "./imported-file";
+
 export class Settings {
   color_map:any  = {
     "pathogenic": "#ff5671",
@@ -11,6 +13,8 @@ export class Settings {
     "MDSGene - clearly pathogenic mutations": "#bc64ff",
   }
 
+  protein: string = ""
+
   visible :any= {
 
   }
@@ -19,7 +23,13 @@ export class Settings {
 
   legendOrder: string[] = []
 
-  legendRename: any = {
+  legendRename: any = {}
 
-  }
+  filter: any = {}
+
+  domains: any[] = []
+
+  importedFile: {[key: string]: ImportedFile} = {}
+
+  pathogenicityFilter: {[key: string]: {[key: string]: boolean} } = {}
 }

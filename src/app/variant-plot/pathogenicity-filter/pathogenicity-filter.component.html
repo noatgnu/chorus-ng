@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Advanced Filter</h1>
+<div mat-dialog-content>
+  <section *ngFor="let k of keys">
+    <h4>{{k}}</h4>
+    <ul>
+      <ng-container *ngFor="let f of filterObjects">
+        <li *ngIf="f.dataset === k">
+          <mat-checkbox color="primary" [(ngModel)]="f.status">
+            {{f.pathogenicity}}
+          </mat-checkbox>
+        </li>
+      </ng-container>
+    </ul>
+  </section>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="filterObjects" cdkFocusInitial>Save</button>
+</div>

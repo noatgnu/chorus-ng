@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>Data Filter</h1>
+<div mat-dialog-content>
+  <form>
+    <div style="display: flex; align-items: center" *ngFor="let f of filters; let ind=index">
+      <mat-form-field style="margin-right: 20px">
+        <mat-label>
+          Select Metadata Column
+        </mat-label>
+        <mat-select [(ngModel)]="f.column" [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let c of file.columns" [value]="c">
+            {{c}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field style="margin-right: 20px">
+        <mat-label>
+          Filter For
+        </mat-label>
+        <input matInput type="text" [(ngModel)]="f.filterValue" [ngModelOptions]="{standalone: true}">
+      </mat-form-field>
+      <div>
+        <button mat-raised-button color="warn" (click)="removeFilter(ind)">-</button>
+      </div>
+
+    </div>
+  </form>
+
+  <button mat-raised-button color="primary" (click)="addFilter()">+</button>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="[]">Skip</button>
+  <button mat-button [mat-dialog-close]="filters" cdkFocusInitial>Filter</button>
+</div>

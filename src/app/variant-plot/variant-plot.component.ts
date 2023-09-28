@@ -1,11 +1,15 @@
 import {Component, Input} from '@angular/core';
-import {Protein, Variant} from "../protein-query";
+import {Protein} from "../protein-query";
 import {WebService} from "../web.service";
-import {Settings} from "../settings";
 import {SettingsService} from "../settings.service";
 import {MatDialog} from "@angular/material/dialog";
 import {LegendOrderComponent} from "./legend-order/legend-order.component";
 import {LegendRenameComponent} from "./legend-rename/legend-rename.component";
+import {DataService} from "../data.service";
+import {DataFrame, IDataFrame} from "data-forge";
+import {PathogenicityFilterComponent} from "./pathogenicity-filter/pathogenicity-filter.component";
+import {ColorPickerComponent} from "./color-picker/color-picker.component";
+import {CustomDomainsComponent} from "./custom-domains/custom-domains.component";
 
 @Component({
   selector: 'app-variant-plot',
@@ -20,7 +24,7 @@ export class VariantPlotComponent {
     title: 'Variant Plot',
     autosize: true,
     xaxis: {
-      title: 'Position',
+      title: '',
       showgrid: false,
       showline: true,
       zeroline: false
@@ -48,7 +52,10 @@ export class VariantPlotComponent {
       roworder: 'bottom to top'
     },
     shapes: [],
-    annotations: []
+    annotations: [],
+    legend: {
+      orientation: 'h',
+    }
   }
   config: any = {
     toImageButtonOptions: {
@@ -60,82 +67,102 @@ export class VariantPlotComponent {
     }
   }
   uniprotData: any = undefined
-  variants: Variant[] = []
+  variants: IDataFrame = new DataFrame()
+
   @Input() set data(value: Protein) {
     this.graphLayout.title = value.name
     this.web.getProteinUniprot(value.id).subscribe((data) => {
       this.uniprotData = data
-      this.variants = value.variants
+      this.variants = new DataFrame(value.variants)
       this.drawGraph()
     })
 
   }
-  constructor(private web: WebService, private settings: SettingsService, private dialog: MatDialog) { }
+  constructor(private web: WebService, private settings: SettingsService, private dialog: MatDialog, private dataService: DataService) {
+    this.dataService.reDrawTrigger.subscribe((data) => {
+      if (data) {
+        this.drawGraph()
+      }
+    })
+  }
 
   drawGraph() {
     const temp: any = {}
     for (const v of this.variants) {
-      if (!(v.pathogenicity in temp)) {
-        temp[v.pathogenicity] = {
+      if (this.settings.settings.selected[v.position]) {
+        if (this.settings.settings.selected[v.position][v.original]) {
+          if (this.settings.settings.selected[v.position][v.original][v.mutated]) {
+            let groupName: string = `Alphamissense(${v.pathogenicity})`
+            let hovertext: string = `<b>Alphamissense</b><br>Pathogenicity: ${v.pathogenicity}<br>Score: ${v.score}<br>`
+            for (const d in this.settings.settings.selected[v.position][v.original][v.mutated]) {
+              if (this.settings.settings.pathogenicityFilter[d][this.settings.settings.selected[v.position][v.original][v.mutated][d].pathogenicity] === true) {
+                groupName = groupName + " + " + d
+                hovertext = hovertext + this.settings.settings.selected[v.position][v.original][v.mutated][d].hovertext
+              }
+            }
+            if (groupName !== `Alphamissense(${v.pathogenicity})`) {
+
+              if (!temp[groupName]) {
+                temp[groupName] = {
+                  x: [],
+                  y: [],
+                  text: [],
+                  mode: 'markers',
+                  type: 'scattergl',
+                  marker: { size: 12},
+                  name: groupName,
+                  hoverinfo: 'text',
+                  yaxis: 'y',
+                  visible: true,
+                }
+                if (!this.settings.settings.legendRename[groupName]) {
+                  this.settings.settings.legendRename[groupName] = groupName
+                } else {
+                  temp[groupName].name = this.settings.settings.legendRename[groupName].slice()
+                }
+                if (!this.settings.settings.legendOrder.includes(groupName)) {
+                  this.settings.settings.legendOrder.push(groupName)
+                }
+                if (!(groupName in this.settings.settings.visible)) {
+                  this.settings.settings.visible[groupName] = true
+                } else {
+                  temp[groupName].visible = this.settings.settings.visible[groupName]
+                }
+
+              }
+              temp[groupName].x.push(v.position)
+              temp[groupName].y.push(v.score)
+              temp[groupName].text.push(hovertext)
+            }
+          }
+        }
+      }
+      if (!(v.pathogenicity + " only in Alphamissense" in temp)) {
+        temp[v.pathogenicity + " only in Alphamissense"] = {
           x: [],
           y: [],
           mode: 'markers',
           type: 'scattergl',
-          marker: { size: 12, color: this.settings.settings.color_map[v.pathogenicity] },
-          name: v.pathogenicity,
+          marker: { size: 12, color: this.settings.settings.color_map[v.pathogenicity + " only in Alphamissense"] },
+          name: v.pathogenicity + " only in Alphamissense",
           hovermode: false,
           hoverinfo: 'skip',
           yaxis: 'y',
           visible: true,
+          showlegend: false
         }
-        if (!this.settings.settings.legendRename[v.pathogenicity]) {
-          this.settings.settings.legendRename[v.pathogenicity] = v.pathogenicity
+        if (!this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"]) {
+          this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"] = v.pathogenicity + " only in Alphamissense"
         } else {
-          temp[v.pathogenicity].name = this.settings.settings.legendRename[v.pathogenicity].slice()
+          temp[v.pathogenicity + " only in Alphamissense"].name = this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"].slice()
         }
-        if (!this.settings.settings.legendOrder.includes(v.pathogenicity)) {
-          this.settings.settings.legendOrder.push(v.pathogenicity)
+        if (!this.settings.settings.legendOrder.includes(v.pathogenicity + " only in Alphamissense")) {
+          this.settings.settings.legendOrder.push(v.pathogenicity + " only in Alphamissense")
         }
-        if (!(v.pathogenicity in this.settings.settings.visible)) {
-          this.settings.settings.visible[v.pathogenicity] = true
+        if (!(v.pathogenicity + " only in Alphamissense" in this.settings.settings.visible)) {
+          this.settings.settings.visible[v.pathogenicity + " only in Alphamissense"] = true
         } else {
-          temp[v.pathogenicity].visible = this.settings.settings.visible[v.pathogenicity]
-        }
-        if (!(v.pathogenicity + " only in Alphamissense" in temp)) {
-          temp[v.pathogenicity + " only in Alphamissense"] = {
-            x: [],
-            y: [],
-            mode: 'markers',
-            type: 'scattergl',
-            marker: { size: 12, color: this.settings.settings.color_map[v.pathogenicity + " only in Alphamissense"] },
-            name: v.pathogenicity + " only in Alphamissense",
-            hovermode: false,
-            hoverinfo: 'skip',
-            yaxis: 'y',
-            visible: true
-          }
-          if (!this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"]) {
-            this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"] = v.pathogenicity + " only in Alphamissense"
-          } else {
-            temp[v.pathogenicity + " only in Alphamissense"].name = this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"].slice()
-          }
-          if (!this.settings.settings.legendOrder.includes(v.pathogenicity + " only in Alphamissense")) {
-            this.settings.settings.legendOrder.push(v.pathogenicity + " only in Alphamissense")
-          }
-          if (!(v.pathogenicity + " only in Alphamissense" in this.settings.settings.visible)) {
-            this.settings.settings.visible[v.pathogenicity + " only in Alphamissense"] = true
-          } else {
-            temp[v.pathogenicity + " only in Alphamissense"].visible = this.settings.settings.visible[v.pathogenicity + " only in Alphamissense"]
-          }
-        }
-      }
-      if (this.settings.settings.selected[v.position]) {
-        if (this.settings.settings.selected[v.position][v.original]) {
-          if (this.settings.settings.selected[v.position][v.original][v.mutated]) {
-            temp[v.pathogenicity].x.push(v.position)
-            temp[v.pathogenicity].y.push(v.score)
-            continue
-          }
+          temp[v.pathogenicity + " only in Alphamissense"].visible = this.settings.settings.visible[v.pathogenicity + " only in Alphamissense"]
         }
       }
       temp[v.pathogenicity + " only in Alphamissense"].x.push(v.position)
@@ -160,6 +187,9 @@ export class VariantPlotComponent {
     if (this.uniprotData) {
       this.graphLayout.title = this.uniprotData["Gene Names"]
       this.graphLayout.xaxis.range = [0, this.uniprotData["Sequence"].length]
+      if (this.settings.settings.domains.length > 0) {
+        this.uniprotData["domains"] = this.settings.settings.domains
+      }
       if (this.uniprotData["domains"]) {
         if (this.uniprotData["domains"].length > 0) {
           for (const d of this.uniprotData["domains"]) {
@@ -226,7 +256,9 @@ export class VariantPlotComponent {
 
     const data: any[] = []
     for (const key of this.settings.settings.legendOrder) {
-      data.push(temp[key])
+      if (temp[key]) {
+        data.push(temp[key])
+      }
     }
     this.graphLayout.shapes = shapes
     this.graphLayout.annotations = annotations
@@ -240,6 +272,7 @@ export class VariantPlotComponent {
         scale: 1
       }
     }
+    console.log(this.graphData)
   }
 
   legendClickHandler(event: any) {
@@ -269,6 +302,54 @@ export class VariantPlotComponent {
     ref.afterClosed().subscribe((data) => {
       if (data) {
         this.settings.settings.legendRename = data
+        this.drawGraph()
+      }
+    })
+  }
+
+  openPathogenicityFilter() {
+    const ref = this.dialog.open(PathogenicityFilterComponent)
+    ref.componentInstance.pathogenicityFilter = Object.assign({}, this.settings.settings.pathogenicityFilter)
+    ref.afterClosed().subscribe((data) => {
+      if (data) {
+        for (const f of data) {
+          this.settings.settings.pathogenicityFilter[f.dataset][f.pathogenicity] = f.status
+        }
+        this.drawGraph()
+      }
+    })
+  }
+
+  openColorPicker() {
+    const ref = this.dialog.open(ColorPickerComponent)
+    const colors: any[] = []
+    for (const d of this.settings.settings.legendOrder) {
+      colors.push({color: this.settings.settings.color_map[d], legend: d})
+    }
+    ref.componentInstance.colors = colors
+    ref.afterClosed().subscribe((data) => {
+      if (data) {
+        for (const d of data) {
+          this.settings.settings.color_map[d.legend] = d.color
+        }
+        this.drawGraph()
+      }
+    })
+  }
+
+  openCustomDomains() {
+    const ref = this.dialog.open(CustomDomainsComponent)
+
+    ref.componentInstance.domains = this.settings.settings.domains.map((d: any) => {
+      return {
+        name: d["domain"].slice(),
+        start: d["start"],
+        end: d["end"]
+      }
+    })
+    ref.afterClosed().subscribe((data) => {
+      if (data) {
+        this.settings.settings.domains = data
         this.drawGraph()
       }
     })

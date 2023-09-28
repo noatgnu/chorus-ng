@@ -15,7 +15,7 @@
 
   </mat-card-header>
   <mat-card-content>
-    <plotly-plot [data]="graphData" [layout]="graphLayout" [updateOnDataChange]="true" [updateOnLayoutChange]="true"
+    <plotly-plot [config]="config" [data]="graphData" [layout]="graphLayout" [updateOnDataChange]="true" [updateOnLayoutChange]="true"
                  [useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}" (legendClick)="legendClickHandler($event)"
     ></plotly-plot>
   </mat-card-content>
@@ -24,4 +24,7 @@
 <mat-menu #menu="matMenu">
   <button mat-menu-item (click)="openLegendOrder()">Legend Order</button>
   <button mat-menu-item (click)="openLegendRename()">Legend Rename</button>
+  <button mat-menu-item (click)="openPathogenicityFilter()">Advanced Filter</button>
+  <button mat-menu-item (click)="openColorPicker()">Legend Color Editor</button>
+  <button mat-menu-item (click)="openCustomDomains()">Domains Editor</button>
 </mat-menu>

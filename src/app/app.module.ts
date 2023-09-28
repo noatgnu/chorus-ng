@@ -22,6 +22,15 @@ import {CdkDrag, CdkDropList} from "@angular/cdk/drag-drop";
 import {MatMenuModule} from "@angular/material/menu";
 import { LegendRenameComponent } from './variant-plot/legend-rename/legend-rename.component';
 import { ColorPickerComponent } from './variant-plot/color-picker/color-picker.component';
+import { FileInputComponent } from './file-input/file-input.component';
+import {MatSelectModule} from "@angular/material/select";
+import { DataFilterDialogComponent } from './data-filter-dialog/data-filter-dialog.component';
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import { PathogenicityFilterComponent } from './variant-plot/pathogenicity-filter/pathogenicity-filter.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import { CustomDomainsComponent } from './variant-plot/custom-domains/custom-domains.component';
+import {NgxColorsModule} from "ngx-colors";
+
 
 PlotlyModule.plotlyjs = PlotlyJS;
 @NgModule({
@@ -31,7 +40,11 @@ PlotlyModule.plotlyjs = PlotlyJS;
     VariantPlotComponent,
     LegendOrderComponent,
     LegendRenameComponent,
-    ColorPickerComponent
+    ColorPickerComponent,
+    FileInputComponent,
+    DataFilterDialogComponent,
+    PathogenicityFilterComponent,
+    CustomDomainsComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +63,11 @@ PlotlyModule.plotlyjs = PlotlyJS;
     MatListModule,
     CdkDropList,
     CdkDrag,
-    MatMenuModule
+    MatMenuModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    MatCheckboxModule,
+    NgxColorsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
