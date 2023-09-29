@@ -6,14 +6,14 @@ import {HttpClient} from "@angular/common/http";
   providedIn: 'root'
 })
 export class WebService {
-
+  baseUrl = "https://chorus.cap.erymonite.com"
   constructor(private http: HttpClient) { }
 
   getProtein(protein: string) {
-    return this.http.get<ProteinQuery>(`http://127.0.0.1:8000/api/protein/?name=${protein}`)
+    return this.http.get<ProteinQuery>(`${this.baseUrl}/api/protein/?name=${protein}`)
   }
 
   getProteinUniprot(proteinID: number) {
-    return this.http.get<any>(`http://127.0.0.1:8000/api/protein/${proteinID}/get_uniprot/`)
+    return this.http.get<any>(`${this.baseUrl}/api/protein/${proteinID}/get_uniprot/`)
   }
 }

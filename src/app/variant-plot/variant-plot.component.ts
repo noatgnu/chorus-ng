@@ -18,7 +18,17 @@ import {CustomDomainsComponent} from "./custom-domains/custom-domains.component"
 })
 export class VariantPlotComponent {
   graphData: any[] = []
-
+  defaultColorList: string[] = [
+    "#fd7f6f",
+    "#7eb0d5",
+    "#b2e061",
+    "#bd7ebe",
+    "#ffb55a",
+    "#ffee65",
+    "#beb9db",
+    "#fdcce5",
+    "#8bd3c7",
+  ]
   graphLayout: any = {
     traceorder: 'normal',
     title: 'Variant Plot',
@@ -255,8 +265,19 @@ export class VariantPlotComponent {
     }
 
     const data: any[] = []
+    let colorCount = 0
     for (const key of this.settings.settings.legendOrder) {
       if (temp[key]) {
+        if (key in this.settings.settings.color_map){
+          temp[key].marker.color = this.settings.settings.color_map[key]
+        } else {
+          temp[key].marker.color = this.defaultColorList[colorCount]
+          this.settings.settings.color_map[key] = this.defaultColorList[colorCount].slice()
+          colorCount++
+          if (colorCount >= this.defaultColorList.length) {
+            colorCount = 0
+          }
+        }
         data.push(temp[key])
       }
     }
