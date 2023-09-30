@@ -30,6 +30,8 @@ import { PathogenicityFilterComponent } from './variant-plot/pathogenicity-filte
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import { CustomDomainsComponent } from './variant-plot/custom-domains/custom-domains.component';
 import {NgxColorsModule} from "ngx-colors";
+import {MatSidenavModule} from "@angular/material/sidenav";
+import { VariantSearchComponent } from './variant-search/variant-search.component';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -44,31 +46,33 @@ PlotlyModule.plotlyjs = PlotlyJS;
     FileInputComponent,
     DataFilterDialogComponent,
     PathogenicityFilterComponent,
-    CustomDomainsComponent
+    CustomDomainsComponent,
+    VariantSearchComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    PlotlyModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatCardModule,
-    MatInputModule,
-    MatDialogModule,
-    MatListModule,
-    CdkDropList,
-    CdkDrag,
-    MatMenuModule,
-    MatSelectModule,
-    MatSnackBarModule,
-    MatCheckboxModule,
-    NgxColorsModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        PlotlyModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatCardModule,
+        MatInputModule,
+        MatDialogModule,
+        MatListModule,
+        CdkDropList,
+        CdkDrag,
+        MatMenuModule,
+        MatSelectModule,
+        MatSnackBarModule,
+        MatCheckboxModule,
+        NgxColorsModule,
+        MatSidenavModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

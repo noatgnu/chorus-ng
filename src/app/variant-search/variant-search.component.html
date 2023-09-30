@@ -1,0 +1,25 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Variant Search
+    </mat-card-title>
+    <mat-card-subtitle>
+      Missense amino acid variants in format of (origin)(position)(variant) without parenthesis delimited by commas
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field style="width: 80%; margin-right: 20px">
+        <mat-label>
+          Variants
+        </mat-label>
+        <textarea matInput #autosize="cdkTextareaAutosize" cdkTextareaAutosize formControlName="variants"
+                  cdkAutosizeMaxRows="2"></textarea>
+        <mat-hint align="end">
+          {{variants.length || 0}} variants
+        </mat-hint>
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">Search</button>
+    </form>
+  </mat-card-content>
+</mat-card>

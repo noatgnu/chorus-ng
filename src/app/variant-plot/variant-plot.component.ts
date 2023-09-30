@@ -19,15 +19,14 @@ import {CustomDomainsComponent} from "./custom-domains/custom-domains.component"
 export class VariantPlotComponent {
   graphData: any[] = []
   defaultColorList: string[] = [
-    "#fd7f6f",
-    "#7eb0d5",
-    "#b2e061",
-    "#bd7ebe",
-    "#ffb55a",
-    "#ffee65",
-    "#beb9db",
-    "#fdcce5",
-    "#8bd3c7",
+    "#E69F00",
+    "#56B4E9",
+    "#009E73",
+    "#F0E442",
+    "#0072B2",
+    "#D55E00",
+    "#CC79A7",
+    "#000000"
   ]
   graphLayout: any = {
     traceorder: 'normal',
@@ -270,6 +269,12 @@ export class VariantPlotComponent {
       if (temp[key]) {
         if (key in this.settings.settings.color_map){
           temp[key].marker.color = this.settings.settings.color_map[key]
+          if (this.defaultColorList[colorCount] === this.settings.settings.color_map[key]) {
+            colorCount++
+            if (colorCount >= this.defaultColorList.length) {
+              colorCount = 0
+            }
+          }
         } else {
           temp[key].marker.color = this.defaultColorList[colorCount]
           this.settings.settings.color_map[key] = this.defaultColorList[colorCount].slice()

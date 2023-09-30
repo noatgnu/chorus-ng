@@ -9,6 +9,7 @@ import {fromCSV, Series} from "data-forge";
 import {DataService} from "./data.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SettingsService} from "./settings.service";
+import {VariantSimple} from "./variant-simple";
 
 @Component({
   selector: 'app-root',
@@ -153,5 +154,39 @@ export class AppComponent implements AfterViewInit{
       this.restoreFile(event.target.result)
     }
     reader.readAsText(file)
+  }
+
+  searchVariantsHandler(e: VariantSimple[]) {
+    if (e.length > 0) {
+      this.settings.settings.selectionNumber++
+      let dataSetname = `(Search #${this.settings.settings.selectionNumber})`
+      if (e.length === 1) {
+        dataSetname = `${e[0].original}${e[0].position}${e[0].mutated} ${dataSetname}`
+      } else {
+        dataSetname = `${e.length} variants ${dataSetname}`
+      }
+      if (!this.settings.settings.pathogenicityFilter[dataSetname]) {
+        this.settings.settings.pathogenicityFilter[dataSetname]= {}
+      }
+      if (!this.settings.settings.pathogenicityFilter[dataSetname]['']) {
+        this.settings.settings.pathogenicityFilter[dataSetname][''] = true
+      }
+      e.forEach((variant: VariantSimple) => {
+        if (!this.settings.settings.selected[variant.position]) {
+          this.settings.settings.selected[variant.position] = {}
+        }
+        if (!this.settings.settings.selected[variant.position][variant.original]) {
+          this.settings.settings.selected[variant.position][variant.original] = {}
+        }
+        if (!this.settings.settings.selected[variant.position][variant.original][variant.mutated]) {
+          this.settings.settings.selected[variant.position][variant.original][variant.mutated] = {}
+        }
+        if (!this.settings.settings.selected[variant.position][variant.original][variant.mutated][dataSetname]) {
+          this.settings.settings.selected[variant.position][variant.original][variant.mutated][dataSetname] = {name: dataSetname, hovertext: "", pathogenicity: ""}
+        }
+        this.data.reDrawTrigger.next(true)
+      })
+    }
+
   }
 }

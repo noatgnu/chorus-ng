@@ -1,6 +1,7 @@
 import {ImportedFile} from "./imported-file";
 
 export class Settings {
+  selectionNumber: number = 0
   color_map:any  = {
     "pathogenic": "#ff5671",
     "pathogenic only in Alphamissense": "rgba(255,86,113,0.01)",
