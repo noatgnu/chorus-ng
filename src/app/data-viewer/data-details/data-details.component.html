@@ -1,0 +1,29 @@
+<p>
+  Found in
+  <mat-chip-listbox>
+    <ng-container *ngFor="let item of dataLabels">
+      <mat-chip  *ngIf="settings.settings.userSelection.includes(item)" color="primary">
+        {{item}}
+      </mat-chip>
+    </ng-container>
+
+  </mat-chip-listbox>
+</p>
+<mat-accordion multi>
+  <ng-container *ngFor="let l of dataLabels">
+    <mat-expansion-panel *ngIf="settings.settings.importedFile[l]">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{l}}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{data[l].pathogenicity}}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <p *ngFor="let c of settings.settings.importedFile[l].form.columnsToKeep">
+        {{c}}: {{data[l].row[c]}}
+      </p>
+    </mat-expansion-panel>
+  </ng-container>
+
+</mat-accordion>

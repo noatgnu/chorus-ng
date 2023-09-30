@@ -41,6 +41,7 @@ export class FileInputComponent {
 
   save() {
     if (this.form.valid) {
+      console.log(this.form.value)
       const importedFile: ImportedFile = {
         columns: this.df.getColumnNames(), data: this.df, dataType: "standard", form: this.form.value, originalData: this.originalData.slice(), originalFileName: this.fileName.slice()
       }

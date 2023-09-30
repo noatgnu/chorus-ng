@@ -9,5 +9,6 @@ export class DataService {
   currentData: { [key: string]: any } = {}
   alphamissenseVariantData: IDataFrame<number, any> = new DataFrame()
   reDrawTrigger: Subject<boolean> = new Subject<boolean>()
+  updateTrigger: Subject<boolean> = new Subject<boolean>()
   constructor() { }
 }

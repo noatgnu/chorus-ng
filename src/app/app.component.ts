@@ -1,11 +1,11 @@
 import {AfterViewInit, Component} from '@angular/core';
-import {Protein, ProteinQuery} from "./protein-query";
+import {Protein, ProteinQuery, Variant} from "./protein-query";
 import {WebService} from "./web.service";
 import {ImportedFile} from "./imported-file";
 import {MatDialog} from "@angular/material/dialog";
 import {DataFilterDialogComponent} from "./data-filter-dialog/data-filter-dialog.component";
 import {FilterColumn} from "./filter-column";
-import {fromCSV, Series} from "data-forge";
+import {DataFrame, fromCSV, IDataFrame, Series} from "data-forge";
 import {DataService} from "./data.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SettingsService} from "./settings.service";
@@ -18,10 +18,10 @@ import {VariantSimple} from "./variant-simple";
 })
 
 export class AppComponent implements AfterViewInit{
-  title = 'chorus-ng';
   results: Protein[] = []
   fileProcessingFinished = false
-  constructor(private web: WebService, private dialog: MatDialog, private data: DataService, private snackbar: MatSnackBar, private settings: SettingsService) {
+  filteredData: Variant[] = []
+  constructor(private web: WebService, private dialog: MatDialog, private data: DataService, private snackbar: MatSnackBar, public settings: SettingsService, private dataService: DataService){
 
   }
 
@@ -98,6 +98,7 @@ export class AppComponent implements AfterViewInit{
       this.snackbar.open("File processed", "OK", {duration: 2000})
       this.settings.settings.filter[e.form.name] = data
       this.data.reDrawTrigger.next(true)
+      this.dataService.updateTrigger.next(true)
     })
   }
 
@@ -126,8 +127,10 @@ export class AppComponent implements AfterViewInit{
       initialSettings.importedFile[i].data = fromCSV(initialSettings.importedFile[i].originalData)
     }
     for (const s in this.settings.settings) {
-      // @ts-ignore
-      this.settings.settings[s] = initialSettings[s]
+      if (initialSettings[s] !== undefined) {
+        // @ts-ignore
+        this.settings.settings[s] = initialSettings[s]
+      }
     }
 
     for (const i in this.settings.settings.importedFile) {
@@ -143,6 +146,9 @@ export class AppComponent implements AfterViewInit{
       }
       this.data.currentData[form.name] = df
       this.searchForVariantUsingProtein(this.settings.settings.protein)
+      this.filteredData = this.results[0].variants.filter((row: Variant) => {
+        return this.settings.settings.selection[`${row.original}${row.position}${row.mutated}`] !== undefined
+      })
     }
   }
 
@@ -165,6 +171,7 @@ export class AppComponent implements AfterViewInit{
       } else {
         dataSetname = `${e.length} variants ${dataSetname}`
       }
+      this.settings.settings.userSelection.push(dataSetname)
       if (!this.settings.settings.pathogenicityFilter[dataSetname]) {
         this.settings.settings.pathogenicityFilter[dataSetname]= {}
       }
@@ -184,7 +191,13 @@ export class AppComponent implements AfterViewInit{
         if (!this.settings.settings.selected[variant.position][variant.original][variant.mutated][dataSetname]) {
           this.settings.settings.selected[variant.position][variant.original][variant.mutated][dataSetname] = {name: dataSetname, hovertext: "", pathogenicity: ""}
         }
-        this.data.reDrawTrigger.next(true)
+        if (!this.settings.settings.selection[`${variant.original}${variant.position}${variant.mutated}`]) {
+          this.settings.settings.selection[`${variant.original}${variant.position}${variant.mutated}`] = variant
+        }
+      })
+      this.data.reDrawTrigger.next(true)
+      this.filteredData = this.results[0].variants.filter((row: Variant) => {
+        return this.settings.settings.selection[`${row.original}${row.position}${row.mutated}`] !== undefined
       })
     }
 

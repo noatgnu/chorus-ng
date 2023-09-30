@@ -28,8 +28,11 @@
   <div style="padding: 20px">
     <app-variant-plot *ngIf="results.length > 0" [data]="results[0]"></app-variant-plot>
   </div>
-
+  <div style="padding: 20px">
+    <app-data-viewer [data]="filteredData" *ngIf="filteredData.length>0"></app-data-viewer>
+  </div>
 </mat-drawer-container>
+
 
 
 <input type="file" id="file" #reloadFile hidden style="display: none" (change)="reloadFileHandler($event)">

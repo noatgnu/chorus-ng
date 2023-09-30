@@ -1,7 +1,9 @@
 import {ImportedFile} from "./imported-file";
+import {VariantSimple} from "./variant-simple";
 
 export class Settings {
   selectionNumber: number = 0
+  userSelection: string[] = []
   color_map:any  = {
     "pathogenic": "#ff5671",
     "pathogenic only in Alphamissense": "rgba(255,86,113,0.01)",
@@ -13,6 +15,7 @@ export class Settings {
     "MDSGene - possibly pathogenic": "#29eeed",
     "MDSGene - clearly pathogenic mutations": "#bc64ff",
   }
+
 
   protein: string = ""
 
@@ -33,4 +36,6 @@ export class Settings {
   importedFile: {[key: string]: ImportedFile} = {}
 
   pathogenicityFilter: {[key: string]: {[key: string]: boolean} } = {}
+  showbackground: boolean = true
+  selection: any = {}
 }

@@ -1,0 +1,17 @@
+<div *ngFor="let v of data" style="padding-bottom: 20px">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <span style="color: #bb8182">{{v.original}}</span><span>{{v.position}}</span><span [ngStyle]="{'color': settings.settings.color_map[v.pathogenicity]}">{{v.mutated}}</span>
+      </mat-card-title>
+      <mat-card-subtitle>
+        <p>
+          Alphamissense: <span [ngStyle]="{'color': settings.settings.color_map[v.pathogenicity]}"><b>{{v.pathogenicity}}({{v.score}})</b></span>
+        </p>
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <app-data-details [data]="settings.settings.selected[v.position][v.original][v.mutated]"></app-data-details>
+    </mat-card-content>
+  </mat-card>
+</div>

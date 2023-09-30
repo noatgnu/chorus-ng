@@ -13,6 +13,14 @@
     </div>
   </mat-card-header>
   <mat-card-content>
+    <div>
+      <form [formGroup]="form">
+        <mat-checkbox formControlName="showbackground">
+          Show alphamissense only background data point
+        </mat-checkbox>
+      </form>
+
+    </div>
     <plotly-plot [config]="config" [data]="graphData" [layout]="graphLayout" [updateOnDataChange]="true" [updateOnLayoutChange]="true"
                  [useResizeHandler]="true" (legendClick)="legendClickHandler($event)"
     ></plotly-plot>

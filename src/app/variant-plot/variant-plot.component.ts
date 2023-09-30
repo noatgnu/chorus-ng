@@ -10,6 +10,7 @@ import {DataFrame, IDataFrame} from "data-forge";
 import {PathogenicityFilterComponent} from "./pathogenicity-filter/pathogenicity-filter.component";
 import {ColorPickerComponent} from "./color-picker/color-picker.component";
 import {CustomDomainsComponent} from "./custom-domains/custom-domains.component";
+import {FormBuilder} from "@angular/forms";
 
 @Component({
   selector: 'app-variant-plot',
@@ -87,9 +88,19 @@ export class VariantPlotComponent {
     })
 
   }
-  constructor(private web: WebService, private settings: SettingsService, private dialog: MatDialog, private dataService: DataService) {
+
+  form = this.fb.group({
+    showbackground: [true],
+  })
+  constructor(private web: WebService, public settings: SettingsService, private dialog: MatDialog, private dataService: DataService, private fb: FormBuilder) {
     this.dataService.reDrawTrigger.subscribe((data) => {
       if (data) {
+        this.drawGraph()
+      }
+    })
+    this.form.controls.showbackground.valueChanges.subscribe((data) => {
+      if (data !== null) {
+        this.settings.settings.showbackground = data
         this.drawGraph()
       }
     })
@@ -101,84 +112,91 @@ export class VariantPlotComponent {
       if (this.settings.settings.selected[v.position]) {
         if (this.settings.settings.selected[v.position][v.original]) {
           if (this.settings.settings.selected[v.position][v.original][v.mutated]) {
-            let groupName: string = `Alphamissense(${v.pathogenicity})`
-            let hovertext: string = `<b>Alphamissense</b><br>Pathogenicity: ${v.pathogenicity}<br>Score: ${v.score}<br>`
+            //let groupName: string = `Alphamissense(${v.pathogenicity})`
+
+            let hovertext: string = `<b>Alphamissense</b><br>Pathogenicity: ${v.pathogenicity}<br>Score: ${v.score}<br>Variants: ${v.original}${v.position}${v.mutated}<br>`
             for (const d in this.settings.settings.selected[v.position][v.original][v.mutated]) {
               if (this.settings.settings.pathogenicityFilter[d][this.settings.settings.selected[v.position][v.original][v.mutated][d].pathogenicity] === true) {
-                groupName = groupName + " + " + d
+                //groupName = groupName + " + " + d
                 hovertext = hovertext + this.settings.settings.selected[v.position][v.original][v.mutated][d].hovertext
               }
             }
-            if (groupName !== `Alphamissense(${v.pathogenicity})`) {
+            for (const d in this.settings.settings.selected[v.position][v.original][v.mutated]) {
+              if (this.settings.settings.pathogenicityFilter[d][this.settings.settings.selected[v.position][v.original][v.mutated][d].pathogenicity] === true) {
+                const groupName = d
+                if (groupName !== ``) {
 
-              if (!temp[groupName]) {
-                temp[groupName] = {
-                  x: [],
-                  y: [],
-                  text: [],
-                  mode: 'markers',
-                  type: 'scattergl',
-                  marker: { size: 12},
-                  name: groupName,
-                  hoverinfo: 'text',
-                  yaxis: 'y',
-                  visible: true,
-                }
-                if (!this.settings.settings.legendRename[groupName]) {
-                  this.settings.settings.legendRename[groupName] = groupName
-                } else {
-                  temp[groupName].name = this.settings.settings.legendRename[groupName].slice()
-                }
-                if (!this.settings.settings.legendOrder.includes(groupName)) {
-                  this.settings.settings.legendOrder.push(groupName)
-                }
-                if (!(groupName in this.settings.settings.visible)) {
-                  this.settings.settings.visible[groupName] = true
-                } else {
-                  temp[groupName].visible = this.settings.settings.visible[groupName]
-                }
+                  if (!temp[groupName]) {
+                    temp[groupName] = {
+                      x: [],
+                      y: [],
+                      text: [],
+                      mode: 'markers',
+                      type: 'scattergl',
+                      marker: { size: 12},
+                      name: groupName,
+                      hoverinfo: 'text',
+                      yaxis: 'y',
+                      visible: true,
+                    }
+                    if (!this.settings.settings.legendRename[groupName]) {
+                      this.settings.settings.legendRename[groupName] = groupName
+                    } else {
+                      temp[groupName].name = this.settings.settings.legendRename[groupName].slice()
+                    }
+                    if (!this.settings.settings.legendOrder.includes(groupName)) {
+                      this.settings.settings.legendOrder.push(groupName)
+                    }
+                    if (!(groupName in this.settings.settings.visible)) {
+                      this.settings.settings.visible[groupName] = true
+                    } else {
+                      temp[groupName].visible = this.settings.settings.visible[groupName]
+                    }
 
+                  }
+                  temp[groupName].x.push(v.position)
+                  temp[groupName].y.push(v.score)
+                  temp[groupName].text.push(hovertext)
+                }
               }
-              temp[groupName].x.push(v.position)
-              temp[groupName].y.push(v.score)
-              temp[groupName].text.push(hovertext)
             }
+
           }
         }
       }
-      if (!(v.pathogenicity + " only in Alphamissense" in temp)) {
-        temp[v.pathogenicity + " only in Alphamissense"] = {
-          x: [],
-          y: [],
-          mode: 'markers',
-          type: 'scattergl',
-          marker: { size: 12, color: this.settings.settings.color_map[v.pathogenicity + " only in Alphamissense"] },
-          name: v.pathogenicity + " only in Alphamissense",
-          hovermode: false,
-          hoverinfo: 'skip',
-          yaxis: 'y',
-          visible: true,
-          showlegend: false
+      if (this.settings.settings.showbackground) {
+        if (!(v.pathogenicity + " only in Alphamissense" in temp)) {
+          temp[v.pathogenicity + " only in Alphamissense"] = {
+            x: [],
+            y: [],
+            mode: 'markers',
+            type: 'scattergl',
+            marker: { size: 12, color: this.settings.settings.color_map[v.pathogenicity + " only in Alphamissense"] },
+            name: v.pathogenicity + " only in Alphamissense",
+            hovermode: false,
+            hoverinfo: 'skip',
+            yaxis: 'y',
+            visible: true,
+            showlegend: false
+          }
+          if (!this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"]) {
+            this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"] = v.pathogenicity + " only in Alphamissense"
+          } else {
+            temp[v.pathogenicity + " only in Alphamissense"].name = this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"].slice()
+          }
+          if (!this.settings.settings.legendOrder.includes(v.pathogenicity + " only in Alphamissense")) {
+            this.settings.settings.legendOrder.push(v.pathogenicity + " only in Alphamissense")
+          }
+          if (!(v.pathogenicity + " only in Alphamissense" in this.settings.settings.visible)) {
+            this.settings.settings.visible[v.pathogenicity + " only in Alphamissense"] = true
+          } else {
+            temp[v.pathogenicity + " only in Alphamissense"].visible = this.settings.settings.visible[v.pathogenicity + " only in Alphamissense"]
+          }
         }
-        if (!this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"]) {
-          this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"] = v.pathogenicity + " only in Alphamissense"
-        } else {
-          temp[v.pathogenicity + " only in Alphamissense"].name = this.settings.settings.legendRename[v.pathogenicity + " only in Alphamissense"].slice()
-        }
-        if (!this.settings.settings.legendOrder.includes(v.pathogenicity + " only in Alphamissense")) {
-          this.settings.settings.legendOrder.push(v.pathogenicity + " only in Alphamissense")
-        }
-        if (!(v.pathogenicity + " only in Alphamissense" in this.settings.settings.visible)) {
-          this.settings.settings.visible[v.pathogenicity + " only in Alphamissense"] = true
-        } else {
-          temp[v.pathogenicity + " only in Alphamissense"].visible = this.settings.settings.visible[v.pathogenicity + " only in Alphamissense"]
-        }
+        temp[v.pathogenicity + " only in Alphamissense"].x.push(v.position)
+        temp[v.pathogenicity + " only in Alphamissense"].y.push(v.score)
       }
-      temp[v.pathogenicity + " only in Alphamissense"].x.push(v.position)
-      temp[v.pathogenicity + " only in Alphamissense"].y.push(v.score)
-
     }
-
     temp["domain"] = {
       x: [],
       y: [],

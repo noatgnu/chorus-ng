@@ -32,6 +32,11 @@ import { CustomDomainsComponent } from './variant-plot/custom-domains/custom-dom
 import {NgxColorsModule} from "ngx-colors";
 import {MatSidenavModule} from "@angular/material/sidenav";
 import { VariantSearchComponent } from './variant-search/variant-search.component';
+import { DataViewerComponent } from './data-viewer/data-viewer.component';
+import { DataDetailsComponent } from './data-viewer/data-details/data-details.component';
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatLegacyChipsModule} from "@angular/material/legacy-chips";
+import {MatChipsModule} from "@angular/material/chips";
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -47,32 +52,37 @@ PlotlyModule.plotlyjs = PlotlyJS;
     DataFilterDialogComponent,
     PathogenicityFilterComponent,
     CustomDomainsComponent,
-    VariantSearchComponent
+    VariantSearchComponent,
+    DataViewerComponent,
+    DataDetailsComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        PlotlyModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatButtonModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatCardModule,
-        MatInputModule,
-        MatDialogModule,
-        MatListModule,
-        CdkDropList,
-        CdkDrag,
-        MatMenuModule,
-        MatSelectModule,
-        MatSnackBarModule,
-        MatCheckboxModule,
-        NgxColorsModule,
-        MatSidenavModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    PlotlyModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatCardModule,
+    MatInputModule,
+    MatDialogModule,
+    MatListModule,
+    CdkDropList,
+    CdkDrag,
+    MatMenuModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    MatCheckboxModule,
+    NgxColorsModule,
+    MatSidenavModule,
+    MatExpansionModule,
+    MatLegacyChipsModule,
+    MatChipsModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
