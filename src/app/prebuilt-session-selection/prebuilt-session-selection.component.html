@@ -1,0 +1,18 @@
+<h3><b>Load Prebuilt Session</b></h3>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div>
+    <mat-form-field style="width: 400px">
+      <mat-label>
+        Session
+      </mat-label>
+      <mat-select formControlName="sessionID">
+        <mat-option *ngFor="let s of data" [value]="s.value">
+          {{s.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div>
+    <button mat-raised-button color="primary" type="submit">Load</button>
+  </div>
+</form>

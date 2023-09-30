@@ -1,63 +1,54 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Import parameters</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <div style="display: flex; justify-content: start">
-      <button mat-raised-button color="primary" (click)="fileImport.click()">Import data</button>
-      <span style="margin-left: 10px">{{fileName}}</span>
-    </div>
-    <small style="margin-left: 10px">Supported file types: .csv, .tsv, .txt</small>
-    <input accept=".csv,.tsv,.txt" hidden type="file" #fileImport (change)="onFileSelected($event)" placeholder="Import file">
-
-    <form [formGroup]="form">
-      <div>
-        <mat-form-field  style="width: 400px">
-          <mat-label>
-            Dataset Name
-          </mat-label>
-          <input type="text" matInput formControlName="name">
-        </mat-form-field>
-      </div>
-      <div>
-        <mat-form-field  style="width: 400px">
-          <mat-label>
-            Variant Column
-          </mat-label>
-          <mat-select formControlName="variant">
-            <mat-option *ngFor="let c of df.getColumnNames()" [value]="c">
-              {{c}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div>
-        <mat-form-field style="width: 400px">
-          <mat-label>
-            Pathogenicity Column
-          </mat-label>
-          <mat-select formControlName="pathogenicity">
-            <mat-option *ngFor="let c of df.getColumnNames()" [value]="c">
-              {{c}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div>
-        <mat-form-field style="width: 400px">
-          <mat-label>
-            Other metadata columns to be displayed
-          </mat-label>
-          <mat-select formControlName="columnsToKeep" multiple>
-            <mat-option *ngFor="let c of df.getColumnNames()" [value]="c">
-              {{c}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-    </form>
-    <mat-card-footer>
-      <button mat-raised-button color="primary" (click)="save()">Save</button>
-    </mat-card-footer>
-  </mat-card-content>
-</mat-card>
+<h3><b>File Import</b></h3>
+<div style="display: flex; justify-content: start">
+  <button mat-raised-button color="primary" (click)="fileImport.click()">Import data</button>
+  <span style="margin-left: 10px">{{fileName}}</span>
+</div>
+<small style="margin-left: 10px">Supported file types: .csv, .tsv, .txt</small>
+<input accept=".csv,.tsv,.txt" hidden type="file" #fileImport (change)="onFileSelected($event)" placeholder="Import file">
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div>
+    <mat-form-field  style="width: 400px">
+      <mat-label>
+        Dataset Name
+      </mat-label>
+      <input type="text" matInput formControlName="name">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field  style="width: 400px">
+      <mat-label>
+        Variant Column
+      </mat-label>
+      <mat-select formControlName="variant">
+        <mat-option *ngFor="let c of df.getColumnNames()" [value]="c">
+          {{c}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field style="width: 400px">
+      <mat-label>
+        Pathogenicity Column
+      </mat-label>
+      <mat-select formControlName="pathogenicity">
+        <mat-option *ngFor="let c of df.getColumnNames()" [value]="c">
+          {{c}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field style="width: 400px">
+      <mat-label>
+        Other metadata columns to be displayed
+      </mat-label>
+      <mat-select formControlName="columnsToKeep" multiple>
+        <mat-option *ngFor="let c of df.getColumnNames()" [value]="c">
+          {{c}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <button mat-raised-button color="primary" type="submit">Save</button>
+</form>

@@ -10,6 +10,7 @@ import {DataService} from "./data.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SettingsService} from "./settings.service";
 import {VariantSimple} from "./variant-simple";
+import {Settings} from "./settings";
 
 @Component({
   selector: 'app-root',
@@ -57,30 +58,43 @@ export class AppComponent implements AfterViewInit{
         const match = /([A-Za-z]+)(\d+)([A-Za-z]+)/.exec(row[e.form.variant])
         if (match) {
           const position = parseInt(match[2])
-          const mutated = match[3]
-          const origin = match[1]
-          if (!this.settings.settings.selected[position]) {
-            this.settings.settings.selected[position] = {}
-          }
-          if (!this.settings.settings.selected[position][origin]) {
-            this.settings.settings.selected[position][origin] = {}
-          }
-          if (!this.settings.settings.selected[position][origin][mutated]) {
-            this.settings.settings.selected[position][origin][mutated] = {}
-          }
+          let mutated = match[3]
+          let origin = match[1]
 
-          if (!this.settings.settings.selected[position][origin][mutated][e.form.name]) {
-            let hovertext: string = `
+          if (origin.length === 3) {
+            if (this.dataService.aminoAcid3to1[origin]) {
+              origin = this.dataService.aminoAcid3to1[origin].slice()
+            }
+          }
+          if (mutated.length === 3) {
+            if (this.dataService.aminoAcid3to1[mutated]) {
+              mutated = this.dataService.aminoAcid3to1[mutated].slice()
+            }
+          }
+          if (origin.length === 1 && mutated.length === 1) {
+            if (!this.settings.settings.selected[position]) {
+              this.settings.settings.selected[position] = {}
+            }
+            if (!this.settings.settings.selected[position][origin]) {
+              this.settings.settings.selected[position][origin] = {}
+            }
+            if (!this.settings.settings.selected[position][origin][mutated]) {
+              this.settings.settings.selected[position][origin][mutated] = {}
+            }
+
+            if (!this.settings.settings.selected[position][origin][mutated][e.form.name]) {
+              let hovertext: string = `
             <b>${e.form.name}</b> <br>
             Variant: ${row[e.form.variant]} <br>
             Position: ${position} <br>
             ${e.form.pathogenicity}: ${row[e.form.pathogenicity]} <br>
             `
-            for (const c of e.form.columnsToKeep) {
-              hovertext += `${c}: ${row[c]} <br>`
-            }
-            this.settings.settings.selected[position][origin][mutated][e.form.name] ={name: e.form.name, row: row,
-              hovertext: hovertext, pathogenicity: row[e.form.pathogenicity]
+              for (const c of e.form.columnsToKeep) {
+                hovertext += `${c}: ${row[c]} <br>`
+              }
+              this.settings.settings.selected[position][origin][mutated][e.form.name] ={name: e.form.name, row: row,
+                hovertext: hovertext, pathogenicity: row[e.form.pathogenicity]
+              }
             }
           }
         }
@@ -121,8 +135,14 @@ export class AppComponent implements AfterViewInit{
     window.URL.revokeObjectURL(url)
   }
 
-  restoreFile(payload: string) {
-    const initialSettings = JSON.parse(payload)
+  restoreFile(payload: any) {
+    let initialSettings: any = {}
+    if (typeof payload !== "string") {
+      initialSettings = payload
+    } else {
+      initialSettings = JSON.parse(payload)
+    }
+    this.settings.settings = new Settings()
     for (const i in initialSettings.importedFile) {
       initialSettings.importedFile[i].data = fromCSV(initialSettings.importedFile[i].originalData)
     }
@@ -200,6 +220,9 @@ export class AppComponent implements AfterViewInit{
         return this.settings.settings.selection[`${row.original}${row.position}${row.mutated}`] !== undefined
       })
     }
+  }
 
+  loadPrebuiltHandler(e: any) {
+    this.restoreFile(e)
   }
 }

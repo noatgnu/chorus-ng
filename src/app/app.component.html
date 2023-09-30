@@ -1,8 +1,18 @@
 <mat-drawer-container autosize class="drawer-container">
   <mat-drawer #drawer mode="side" class="drawer-sidenav-content">
+    <div style="display: flex; justify-content: center; padding: 20px">
+      <div aria-label="circular logo" class="image-cropper">
+        <div class="chorus-logo">
+          <img src="assets/logo.png" alt="logo" height="200" width="200"/>
+        </div>
+      </div>
+    </div>
     <div style="padding: 20px">
       <app-file-input (saveFile)="fileHandler($event)"></app-file-input>
+      <hr>
+      <app-prebuilt-session-selection (sessionData)="loadPrebuiltHandler($event)"></app-prebuilt-session-selection>
     </div>
+
   </mat-drawer>
   <mat-toolbar color="primary">
     <button (click)="drawer.toggle()" mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
@@ -32,7 +42,6 @@
     <app-data-viewer [data]="filteredData" *ngIf="filteredData.length>0"></app-data-viewer>
   </div>
 </mat-drawer-container>
-
 
 
 <input type="file" id="file" #reloadFile hidden style="display: none" (change)="reloadFileHandler($event)">
