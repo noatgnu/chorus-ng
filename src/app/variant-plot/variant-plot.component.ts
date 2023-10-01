@@ -39,7 +39,8 @@ export class VariantPlotComponent {
       title: '',
       showgrid: false,
       showline: true,
-      zeroline: false
+      zeroline: false,
+      range: [0, 1],
     },
     yaxis: {
       title: 'Score',
