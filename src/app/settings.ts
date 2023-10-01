@@ -38,4 +38,22 @@ export class Settings {
   pathogenicityFilter: {[key: string]: {[key: string]: boolean} } = {}
   showbackground: boolean = true
   selection: any = {}
+
+  removeDataset(dataset: string) {
+    delete this.importedFile[dataset]
+    delete this.filter[dataset]
+    delete this.pathogenicityFilter[dataset]
+    delete this.visible[dataset]
+    delete this.color_map[dataset]
+    for (const pos in this.selected) {
+      for (const orig in this.selected[pos]) {
+        for (const mut in this.selected[pos][orig]) {
+          if (this.selected[pos][orig][mut][dataset]) {
+            delete this.selected[pos][orig][mut][dataset]
+          }
+        }
+      }
+    }
+
+  }
 }

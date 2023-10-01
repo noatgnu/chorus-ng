@@ -1,0 +1,24 @@
+<h1 mat-dialog-title>Imported Dataset Management</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <div>
+      <mat-form-field>
+        <mat-label>
+          Dataset selection
+        </mat-label>
+        <mat-select formControlName="file">
+          <mat-option *ngFor="let f of fileLabels" [value]="f">
+            {{f}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-checkbox formControlName="remove">Remove dataset</mat-checkbox>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="form.value" cdkFocusInitial>Save</button>
+</div>

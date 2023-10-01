@@ -11,6 +11,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {SettingsService} from "./settings.service";
 import {VariantSimple} from "./variant-simple";
 import {Settings} from "./settings";
+import {ImportedFileManagementComponent} from "./imported-file-management/imported-file-management.component";
 
 @Component({
   selector: 'app-root',
@@ -224,5 +225,18 @@ export class AppComponent implements AfterViewInit{
 
   loadPrebuiltHandler(e: any) {
     this.restoreFile(e)
+  }
+
+  dataManagementHandler() {
+    const ref = this.dialog.open(ImportedFileManagementComponent)
+    ref.afterClosed().subscribe((data: any) => {
+      if (data) {
+        if (data.remove === true) {
+          this.settings.settings.removeDataset(data.file)
+        }
+        this.data.reDrawTrigger.next(true)
+        this.data.updateTrigger.next(true)
+      }
+    })
   }
 }

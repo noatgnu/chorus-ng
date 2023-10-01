@@ -39,6 +39,7 @@ import {MatLegacyChipsModule} from "@angular/material/legacy-chips";
 import {MatChipsModule} from "@angular/material/chips";
 import {NgOptimizedImage} from "@angular/common";
 import { PrebuiltSessionSelectionComponent } from './prebuilt-session-selection/prebuilt-session-selection.component';
+import { ImportedFileManagementComponent } from './imported-file-management/imported-file-management.component';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -57,7 +58,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     VariantSearchComponent,
     DataViewerComponent,
     DataDetailsComponent,
-    PrebuiltSessionSelectionComponent
+    PrebuiltSessionSelectionComponent,
+    ImportedFileManagementComponent
   ],
     imports: [
         BrowserModule,
