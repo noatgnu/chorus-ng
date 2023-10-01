@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Protein} from "../protein-query";
 import {WebService} from "../web.service";
 import {SettingsService} from "../settings.service";
@@ -11,6 +11,7 @@ import {PathogenicityFilterComponent} from "./pathogenicity-filter/pathogenicity
 import {ColorPickerComponent} from "./color-picker/color-picker.component";
 import {CustomDomainsComponent} from "./custom-domains/custom-domains.component";
 import {FormBuilder} from "@angular/forms";
+import {VariantSimple} from "../variant-simple";
 
 @Component({
   selector: 'app-variant-plot',
@@ -19,6 +20,7 @@ import {FormBuilder} from "@angular/forms";
 })
 export class VariantPlotComponent {
   graphData: any[] = []
+  @Output() selected: EventEmitter<VariantSimple[]> = new EventEmitter<VariantSimple[]>()
   defaultColorList: string[] = [
     "#E69F00",
     "#56B4E9",
@@ -133,11 +135,19 @@ export class VariantPlotComponent {
                       text: [],
                       mode: 'markers',
                       type: 'scattergl',
-                      marker: { size: 12},
+                      marker: {
+                        size: 12,
+                        line: {
+                          width: 1,
+                          color: 'rgba(0,0,0,0.5)',
+                        }
+                      },
                       name: groupName,
                       hoverinfo: 'text',
                       yaxis: 'y',
                       visible: true,
+                      data: [],
+
                     }
                     if (!this.settings.settings.legendRename[groupName]) {
                       this.settings.settings.legendRename[groupName] = groupName
@@ -157,6 +167,7 @@ export class VariantPlotComponent {
                   temp[groupName].x.push(v.position)
                   temp[groupName].y.push(v.score)
                   temp[groupName].text.push(hovertext)
+                  temp[groupName].data.push(v)
                 }
               }
             }
@@ -397,5 +408,24 @@ export class VariantPlotComponent {
         this.drawGraph()
       }
     })
+  }
+
+  clickHandler(event: any) {
+    if ("points" in event) {
+      const selected: VariantSimple[] = []
+      for (const p of event["points"]) {
+        const data: any = p.data.data[p.pointNumber]
+        if (this.settings.settings.selected[data.position]) {
+          if (this.settings.settings.selected[data.position][data.original]) {
+            if (this.settings.settings.selected[data.position][data.original][data.mutated]) {
+              selected.push({position: data.position, original: data.original, mutated: data.mutated})
+            }
+          }
+        }
+      }
+      if (selected.length > 0) {
+        this.selected.emit(selected)
+      }
+    }
   }
 }

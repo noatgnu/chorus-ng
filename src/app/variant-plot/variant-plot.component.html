@@ -22,7 +22,7 @@
 
     </div>
     <plotly-plot [config]="config" [data]="graphData" [layout]="graphLayout" [updateOnDataChange]="true" [updateOnLayoutChange]="true"
-                 [useResizeHandler]="true" (legendClick)="legendClickHandler($event)"
+                 [useResizeHandler]="true" (legendClick)="legendClickHandler($event)" (plotlyClick)="clickHandler($event)"
     ></plotly-plot>
   </mat-card-content>
 </mat-card>

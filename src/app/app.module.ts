@@ -40,6 +40,7 @@ import {MatChipsModule} from "@angular/material/chips";
 import {NgOptimizedImage} from "@angular/common";
 import { PrebuiltSessionSelectionComponent } from './prebuilt-session-selection/prebuilt-session-selection.component';
 import { ImportedFileManagementComponent } from './imported-file-management/imported-file-management.component';
+import { HomeComponent } from './home/home.component';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -59,7 +60,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     DataViewerComponent,
     DataDetailsComponent,
     PrebuiltSessionSelectionComponent,
-    ImportedFileManagementComponent
+    ImportedFileManagementComponent,
+    HomeComponent
   ],
     imports: [
         BrowserModule,
