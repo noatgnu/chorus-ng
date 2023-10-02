@@ -1,5 +1,5 @@
 <div *ngFor="let v of data" style="padding-bottom: 20px">
-  <mat-card>
+  <mat-card style="background-color: rgba(252,240,237,0.73)">
     <mat-card-header>
       <mat-card-title>
         <span style="color: #bb8182">{{v.original}}</span><span>{{v.position}}</span><span [ngStyle]="{'color': settings.settings.color_map[v.pathogenicity]}">{{v.mutated}}</span>
