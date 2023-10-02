@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -42,6 +42,7 @@ import { PrebuiltSessionSelectionComponent } from './prebuilt-session-selection/
 import { ImportedFileManagementComponent } from './imported-file-management/imported-file-management.component';
 import { HomeComponent } from './home/home.component';
 import { AnnotationEditorComponent } from './variant-plot/annotation-editor/annotation-editor.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -91,7 +92,13 @@ PlotlyModule.plotlyjs = PlotlyJS;
         MatExpansionModule,
         MatLegacyChipsModule,
         MatChipsModule,
-        NgOptimizedImage
+        NgOptimizedImage,
+        ServiceWorkerModule.register('ngsw-worker.js', {
+          enabled: !isDevMode(),
+          // Register the ServiceWorker as soon as the application is stable
+          // or after 30 seconds (whichever comes first).
+          registrationStrategy: 'registerWhenStable:30000'
+        })
     ],
   providers: [],
   bootstrap: [AppComponent]
