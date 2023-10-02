@@ -11,6 +11,12 @@
       </mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
+
+      <form [formGroup]="formMap[v.original+v.position+v.mutated]">
+        <mat-checkbox formControlName="annotate">
+          Annotate on plot
+        </mat-checkbox>
+      </form>
       <app-data-details [data]="settings.settings.selected[v.position][v.original][v.mutated]"></app-data-details>
     </mat-card-content>
   </mat-card>

@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {SettingsService} from "../../settings.service";
 import {DataService} from "../../data.service";
+import {FormBuilder} from "@angular/forms";
 
 @Component({
   selector: 'app-data-details',
@@ -20,7 +21,10 @@ export class DataDetailsComponent {
   get data() {
     return this._data
   }
-  constructor(public settings: SettingsService, private dataService: DataService) {
+
+
+
+  constructor(public settings: SettingsService, private dataService: DataService, private fb: FormBuilder) {
     this.dataService.updateTrigger.subscribe((data) => {
      this.dataLabels = Object.keys(this.data)
     })

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Protein} from "../protein-query";
+import {Protein, Variant} from "../protein-query";
 import {WebService} from "../web.service";
 import {SettingsService} from "../settings.service";
 import {MatDialog} from "@angular/material/dialog";
@@ -81,7 +81,7 @@ export class VariantPlotComponent {
   }
   uniprotData: any = undefined
   variants: IDataFrame = new DataFrame()
-
+  annotationMap: any = {}
   @Input() set data(value: Protein) {
     this.graphLayout.title = value.name
     this.web.getProteinUniprot(value.id).subscribe((data) => {
@@ -105,6 +105,19 @@ export class VariantPlotComponent {
       if (data !== null) {
         this.settings.settings.showbackground = data
         this.drawGraph()
+      }
+    })
+    this.dataService.annotationTrigger.subscribe((data) => {
+      console.log(data)
+      if (data) {
+        if (!data.status) {
+          this.removeAnnotationLabelForData(data.variant)
+        } else {
+          if (!this.annotationMap[`${data.variant.position}${data.variant.original}${data.variant.mutated}`]) {
+            this.addAnnotationLabelForData(data.variant)
+          }
+        }
+        this.settings.settings.annotations = Object.assign({}, this.annotationMap)
       }
     })
   }
@@ -428,5 +441,39 @@ export class VariantPlotComponent {
         this.selected.emit(selected)
       }
     }
+  }
+
+  addAnnotationLabelForData(data: Variant) {
+    const annotation: any = {
+      x: data.position,
+      y: data.score,
+      xref: 'x',
+      yref: 'y',
+      text: `${data.original}${data.position}${data.mutated}`,
+      showarrow: true,
+      arrowhead: 1,
+      arrowsize: 1,
+      arrowwidth: 1,
+      ax: -20,
+      ay: -20,
+      font: {
+        family: 'Arial, monospace',
+        size: 15,
+        color: '#000000'
+      }
+    }
+    this.annotationMap[`${data.position}${data.original}${data.mutated}`] = annotation
+    this.graphLayout.annotations.push(annotation)
+    this.graphLayout.annotations = [...this.graphLayout.annotations]
+  }
+
+  removeAnnotationLabelForData(data: any) {
+    const index = this.graphLayout.annotations.findIndex((a: any) => {
+      return a.x === data.position && a.y === data.score
+    })
+    if (index > -1) {
+      this.graphLayout.annotations.splice(index, 1)
+    }
+    delete this.annotationMap[`${data.position}${data.original}${data.mutated}`]
   }
 }

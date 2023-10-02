@@ -38,7 +38,7 @@ export class Settings {
   pathogenicityFilter: {[key: string]: {[key: string]: boolean} } = {}
   showbackground: boolean = true
   selection: any = {}
-
+  annotations: any = {}
   removeDataset(dataset: string) {
     delete this.importedFile[dataset]
     delete this.filter[dataset]
