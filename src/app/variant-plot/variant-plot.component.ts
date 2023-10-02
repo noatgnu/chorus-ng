@@ -12,6 +12,7 @@ import {ColorPickerComponent} from "./color-picker/color-picker.component";
 import {CustomDomainsComponent} from "./custom-domains/custom-domains.component";
 import {FormBuilder} from "@angular/forms";
 import {VariantSimple} from "../variant-simple";
+import {AnnotationEditorComponent} from "./annotation-editor/annotation-editor.component";
 
 @Component({
   selector: 'app-variant-plot',
@@ -305,7 +306,9 @@ export class VariantPlotComponent {
         })
       }
     }
-
+    for (const a in this.settings.settings.annotations) {
+      annotations.push(this.settings.settings.annotations[a])
+    }
     const data: any[] = []
     let colorCount = 0
     for (const key of this.settings.settings.legendOrder) {
@@ -445,6 +448,7 @@ export class VariantPlotComponent {
 
   addAnnotationLabelForData(data: Variant) {
     const annotation: any = {
+      data:`${data.original}${data.position}${data.mutated}`,
       x: data.position,
       y: data.score,
       xref: 'x',
@@ -462,18 +466,40 @@ export class VariantPlotComponent {
         color: '#000000'
       }
     }
-    this.annotationMap[`${data.position}${data.original}${data.mutated}`] = annotation
+    this.annotationMap[`${data.original}${data.position}${data.mutated}`] = annotation
     this.graphLayout.annotations.push(annotation)
     this.graphLayout.annotations = [...this.graphLayout.annotations]
   }
 
   removeAnnotationLabelForData(data: any) {
     const index = this.graphLayout.annotations.findIndex((a: any) => {
-      return a.x === data.position && a.y === data.score
+      return a.data === `${data.original}${data.position}${data.mutated}`
     })
     if (index > -1) {
       this.graphLayout.annotations.splice(index, 1)
     }
-    delete this.annotationMap[`${data.position}${data.original}${data.mutated}`]
+    delete this.annotationMap[`${data.original}${data.position}${data.mutated}`]
+  }
+
+  openAnnotationEditor() {
+    const ref = this.dialog.open(AnnotationEditorComponent)
+    ref.componentInstance.data = Object.values(this.annotationMap)
+    ref.afterClosed().subscribe((data) => {
+      if (data) {
+        for (const d of data) {
+          this.annotationMap[d.value.data]["ax"] = d.value["ax"]
+          this.annotationMap[d.value.data]["ay"] = d.value["ay"]
+          this.annotationMap[d.value.data]["text"] = d.value["text"]
+          this.annotationMap[d.value.data]["font"]["color"] = d.value["color"]
+          this.annotationMap[d.value.data]["font"]["size"] = d.value["fontsize"]
+          this.annotationMap[d.value.data]["showarrow"] = d.value["showarrow"]
+          this.annotationMap[d.value.data]["arrowhead"] = d.value["arrowhead"]
+          this.annotationMap[d.value.data]["arrowsize"] = d.value["arrowsize"]
+          this.annotationMap[d.value.data]["arrowwidth"] = d.value["arrowwidth"]
+        }
+        this.settings.settings.annotations = Object.assign({}, this.annotationMap)
+        this.graphLayout.annotations = [...this.graphLayout.annotations]
+      }
+    })
   }
 }

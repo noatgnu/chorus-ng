@@ -1,0 +1,59 @@
+<h1 mat-dialog-title>Annotation Editor</h1>
+<div mat-dialog-content>
+  <div *ngFor="let a of annotationForm">
+    <section>
+      {{a.value.data}}
+      <form [formGroup]="a">
+        <mat-form-field>
+          <mat-label>
+            Text label
+          </mat-label>
+          <input matInput type="text" formControlName="text">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>
+            Font size
+          </mat-label>
+          <input matInput type="number" formControlName="fontsize">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>
+            Offset x (pixels)
+          </mat-label>
+          <input matInput type="number" formControlName="ax">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>
+            (Offset y (pixels)
+          </mat-label>
+          <input matInput type="number" formControlName="ay">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>
+            Arrow head
+          </mat-label>
+          <input matInput type="number" formControlName="arrowhead">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>
+            Arrow size
+          </mat-label>
+          <input matInput type="number" formControlName="arrowsize">
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>
+            Arrow width
+          </mat-label>
+          <input matInput type="number" formControlName="arrowwidth">
+        </mat-form-field>
+        <mat-checkbox formControlName="showarrow">
+          Show arrow
+        </mat-checkbox>
+      </form>
+    </section>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="annotationForm" cdkFocusInitial>Save</button>
+</div>

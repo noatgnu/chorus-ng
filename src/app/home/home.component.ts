@@ -278,6 +278,7 @@ export class HomeComponent implements AfterViewInit{
     const req = this.web.saveSession(payload)
     req.subscribe((data: any) => {
       this.snackbar.open("File saved", "OK", {duration: 2000})
+      this.currentSessionID = data.link_id
       this.currentSessionUrl = location.origin + "/#/" + data.link_id
     })
   }

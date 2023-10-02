@@ -41,6 +41,7 @@ import {NgOptimizedImage} from "@angular/common";
 import { PrebuiltSessionSelectionComponent } from './prebuilt-session-selection/prebuilt-session-selection.component';
 import { ImportedFileManagementComponent } from './imported-file-management/imported-file-management.component';
 import { HomeComponent } from './home/home.component';
+import { AnnotationEditorComponent } from './variant-plot/annotation-editor/annotation-editor.component';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -61,7 +62,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     DataDetailsComponent,
     PrebuiltSessionSelectionComponent,
     ImportedFileManagementComponent,
-    HomeComponent
+    HomeComponent,
+    AnnotationEditorComponent
   ],
     imports: [
         BrowserModule,
