@@ -28,11 +28,13 @@ export class HomeComponent implements AfterViewInit{
   constructor(private route: ActivatedRoute, private web: WebService, private dialog: MatDialog, private data: DataService, private snackbar: MatSnackBar, public settings: SettingsService, private dataService: DataService){
     this.route.params.subscribe(params => {
       if (params['settings']) {
-        this.currentSessionID = params['settings']
-        this.currentSessionUrl = location.origin + "/#/" + this.currentSessionID
-        this.web.downloadSession(params['settings']).then((data: any) => {
-          this.restoreFile(data)
-        })
+        if (params['settings'] !== "") {
+          this.currentSessionID = params['settings']
+          this.currentSessionUrl = location.origin + "/#/" + this.currentSessionID
+          this.web.downloadSession(params['settings']).then((data: any) => {
+            this.restoreFile(data)
+          })
+        }
       }
     })
   }
@@ -47,7 +49,7 @@ export class HomeComponent implements AfterViewInit{
   }
 
   ngAfterViewInit() {
-    if (this.settings.settings.protein !== "") {
+    if (this.settings.settings.protein === "") {
       this.searchForVariantUsingProtein("Q5S007")
     }
   }
