@@ -20,7 +20,7 @@ export class DataViewerComponent {
       })
       this.formMap[`${d.original}${d.position}${d.mutated}`] = form
       form.controls.annotate.valueChanges.subscribe((value) => {
-        if (value) {
+        if (value !== null) {
           this.dataService.annotationTrigger.next({variant: d, status: value})
           console.log(value)
         }

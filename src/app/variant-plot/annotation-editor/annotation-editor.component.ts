@@ -20,7 +20,7 @@ export class AnnotationEditorComponent {
         'arrowhead': [d.arrowhead],
         'arrowsize': [d.arrowsize],
         'arrowwidth': [d.arrowwidth],
-        'data': [d.data],
+        'variantdata': [d.variantdata],
         'fontsize': [d.font.size],
       })
       this.annotationForm.push(form)

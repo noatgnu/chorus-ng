@@ -109,21 +109,21 @@ export class VariantPlotComponent {
       }
     })
     this.dataService.annotationTrigger.subscribe((data) => {
-      console.log(data)
       if (data) {
         if (!data.status) {
           this.removeAnnotationLabelForData(data.variant)
         } else {
-          if (!this.annotationMap[`${data.variant.position}${data.variant.original}${data.variant.mutated}`]) {
+          if (!this.settings.settings.annotations[`${data.variant.position}${data.variant.original}${data.variant.mutated}`]) {
             this.addAnnotationLabelForData(data.variant)
           }
         }
-        this.settings.settings.annotations = Object.assign({}, this.annotationMap)
+        console.log(this.settings.settings.annotations)
       }
     })
   }
 
   drawGraph() {
+    console.log(this.settings.settings.annotations)
     const temp: any = {}
     for (const v of this.variants) {
       if (this.settings.settings.selected[v.position]) {
@@ -307,6 +307,8 @@ export class VariantPlotComponent {
       }
     }
     for (const a in this.settings.settings.annotations) {
+      console.log(a)
+      console.log(this.settings.settings.annotations[a])
       annotations.push(this.settings.settings.annotations[a])
     }
     const data: any[] = []
@@ -448,7 +450,7 @@ export class VariantPlotComponent {
 
   addAnnotationLabelForData(data: Variant) {
     const annotation: any = {
-      data:`${data.original}${data.position}${data.mutated}`,
+      variantdata:`${data.original}${data.position}${data.mutated}`,
       x: data.position,
       y: data.score,
       xref: 'x',
@@ -466,19 +468,21 @@ export class VariantPlotComponent {
         color: '#000000'
       }
     }
-    this.annotationMap[`${data.original}${data.position}${data.mutated}`] = annotation
+    this.settings.settings.annotations[`${data.original}${data.position}${data.mutated}`] = annotation
     this.graphLayout.annotations.push(annotation)
     this.graphLayout.annotations = [...this.graphLayout.annotations]
   }
 
   removeAnnotationLabelForData(data: any) {
     const index = this.graphLayout.annotations.findIndex((a: any) => {
-      return a.data === `${data.original}${data.position}${data.mutated}`
+      return a.variantdata === `${data.original}${data.position}${data.mutated}`
     })
+    console.log(index)
     if (index > -1) {
       this.graphLayout.annotations.splice(index, 1)
     }
-    delete this.annotationMap[`${data.original}${data.position}${data.mutated}`]
+    delete this.settings.settings.annotations[`${data.original}${data.position}${data.mutated}`]
+    this.graphLayout.annotations = [...this.graphLayout.annotations]
   }
 
   openAnnotationEditor() {
@@ -487,15 +491,15 @@ export class VariantPlotComponent {
     ref.afterClosed().subscribe((data) => {
       if (data) {
         for (const d of data) {
-          this.annotationMap[d.value.data]["ax"] = d.value["ax"]
-          this.annotationMap[d.value.data]["ay"] = d.value["ay"]
-          this.annotationMap[d.value.data]["text"] = d.value["text"]
-          this.annotationMap[d.value.data]["font"]["color"] = d.value["color"]
-          this.annotationMap[d.value.data]["font"]["size"] = d.value["fontsize"]
-          this.annotationMap[d.value.data]["showarrow"] = d.value["showarrow"]
-          this.annotationMap[d.value.data]["arrowhead"] = d.value["arrowhead"]
-          this.annotationMap[d.value.data]["arrowsize"] = d.value["arrowsize"]
-          this.annotationMap[d.value.data]["arrowwidth"] = d.value["arrowwidth"]
+          this.annotationMap[d.value.variantdata]["ax"] = d.value["ax"]
+          this.annotationMap[d.value.variantdata]["ay"] = d.value["ay"]
+          this.annotationMap[d.value.variantdata]["text"] = d.value["text"]
+          this.annotationMap[d.value.variantdata]["font"]["color"] = d.value["color"]
+          this.annotationMap[d.value.variantdata]["font"]["size"] = d.value["fontsize"]
+          this.annotationMap[d.value.variantdata]["showarrow"] = d.value["showarrow"]
+          this.annotationMap[d.value.variantdata]["arrowhead"] = d.value["arrowhead"]
+          this.annotationMap[d.value.variantdata]["arrowsize"] = d.value["arrowsize"]
+          this.annotationMap[d.value.variantdata]["arrowwidth"] = d.value["arrowwidth"]
         }
         this.settings.settings.annotations = Object.assign({}, this.annotationMap)
         this.graphLayout.annotations = [...this.graphLayout.annotations]
