@@ -1,11 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
-
 @include mat.core();
 
 $my-palette: mat.define-palette(mat.$indigo-palette, 900);
-$my-accent: mat.define-palette(mat.$teal-palette, A200, A100, A400);
-$my-warn: mat.define-palette(mat.$deep-orange-palette);
+$my-accent: mat.define-palette(mat.$red-palette, A200, A100, A400);
+$my-warn: mat.define-palette(mat.$pink-palette);
 $chorus-theme-map: mat.define-light-theme((color:(primary: $my-palette,accent: $my-accent,warn: $my-warn,),typography: mat.define-typography-config(),density: 0,));
 $chorus-theme: mat.define-light-theme($my-palette, $my-accent, $my-warn);
 
