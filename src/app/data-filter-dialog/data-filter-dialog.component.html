@@ -17,6 +17,7 @@
           Filter For
         </mat-label>
         <input matInput type="text" [(ngModel)]="f.filterValue" [ngModelOptions]="{standalone: true}">
+        <mat-hint>If matching with multiple values, they must be delimited by a "@"</mat-hint>
       </mat-form-field>
       <div>
         <button mat-raised-button color="warn" (click)="removeFilter(ind)">-</button>

@@ -11,7 +11,8 @@ export class ImportedFileManagementComponent {
   fileLabels: string[] = []
   form = this.fb.group({
     file: [""],
-    remove: [false]
+    remove: [false],
+    subsetDialog: [false],
   })
   constructor(public settings: SettingsService, private fb: FormBuilder) {
     for (const key in settings.settings.importedFile) {

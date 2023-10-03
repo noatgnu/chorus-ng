@@ -377,6 +377,7 @@ export class VariantPlotComponent {
       if (data) {
         this.settings.settings.legendRename = data
         this.drawGraph()
+        this.dataService.updateTrigger.next(true)
       }
     })
   }

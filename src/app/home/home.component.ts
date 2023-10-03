@@ -9,7 +9,7 @@ import {ImportedFile} from "../imported-file";
 import {DataFilterDialogComponent} from "../data-filter-dialog/data-filter-dialog.component";
 import {FilterColumn} from "../filter-column";
 import {Settings} from "../settings";
-import {fromCSV} from "data-forge";
+import {fromCSV, IDataFrame} from "data-forge";
 import {VariantSimple} from "../variant-simple";
 import {ImportedFileManagementComponent} from "../imported-file-management/imported-file-management.component";
 import {ActivatedRoute} from "@angular/router";
@@ -62,62 +62,18 @@ export class HomeComponent implements AfterViewInit{
     ref.afterClosed().subscribe((data: FilterColumn[]) => {
       let df = e.data.where(row => row[e.form.variant] !== "").bake()
       for (const f of data){
+        const filterArray = f.filterValue.split("@")
         switch (f.filterType) {
           case "in":
-            df = df.where(row => f.filterValue === row[f.column]).bake()
+            df = df.where(row => f.filterValue.includes(row[f.column])).bake()
             break
         }
       }
 
-
-      df.forEach(row => {
-        const match = /([A-Za-z]+)(\d+)([A-Za-z]+)/.exec(row[e.form.variant])
-        if (match) {
-          const position = parseInt(match[2])
-          let mutated = match[3]
-          let origin = match[1]
-
-          if (origin.length === 3) {
-            if (this.dataService.aminoAcid3to1[origin]) {
-              origin = this.dataService.aminoAcid3to1[origin].slice()
-            }
-          }
-          if (mutated.length === 3) {
-            if (this.dataService.aminoAcid3to1[mutated]) {
-              mutated = this.dataService.aminoAcid3to1[mutated].slice()
-            }
-          }
-          if (origin.length === 1 && mutated.length === 1) {
-            if (!this.settings.settings.selected[position]) {
-              this.settings.settings.selected[position] = {}
-            }
-            if (!this.settings.settings.selected[position][origin]) {
-              this.settings.settings.selected[position][origin] = {}
-            }
-            if (!this.settings.settings.selected[position][origin][mutated]) {
-              this.settings.settings.selected[position][origin][mutated] = {}
-            }
-
-            if (!this.settings.settings.selected[position][origin][mutated][e.form.name]) {
-              let hovertext: string = `
-            <b>${e.form.name}</b> <br>
-            Variant: ${row[e.form.variant]} <br>
-            Position: ${position} <br>
-            ${e.form.pathogenicity}: ${row[e.form.pathogenicity]} <br>
-            `
-              for (const c of e.form.columnsToKeep) {
-                hovertext += `${c}: ${row[c]} <br>`
-              }
-              this.settings.settings.selected[position][origin][mutated][e.form.name] ={name: e.form.name, row: row,
-                hovertext: hovertext, pathogenicity: row[e.form.pathogenicity]
-              }
-            }
-          }
-        }
-      })
+      this.processDataFrameForOverlap(df, e);
       df.getSeries(e.form.pathogenicity).distinct().bake().forEach((pathogenicity: string) => {
         if (!this.settings.settings.pathogenicityFilter[e.form.name]) {
-          this.settings.settings.pathogenicityFilter[e.form.name]= {}
+          this.settings.settings.pathogenicityFilter[e.form.name] = {}
         }
         if (!this.settings.settings.pathogenicityFilter[e.form.name][pathogenicity]) {
           this.settings.settings.pathogenicityFilter[e.form.name][pathogenicity] = true
@@ -125,11 +81,63 @@ export class HomeComponent implements AfterViewInit{
       })
       this.data.currentData[e.form.name] = df
       this.fileProcessingFinished = true
-      this.snackbar.open("File processed", "OK", {duration: 2000})
+
       this.settings.settings.filter[e.form.name] = data
       this.data.reDrawTrigger.next(true)
       this.dataService.updateTrigger.next(true)
+      this.snackbar.open("File processed", "OK", {duration: 2000})
     })
+  }
+
+  private processDataFrameForOverlap(df: IDataFrame<number, any>, e: ImportedFile) {
+    df.forEach(row => {
+      const match = /([A-Za-z]+)(\d+)([A-Za-z]+)/.exec(row[e.form.variant])
+      if (match) {
+        const position = parseInt(match[2])
+        let mutated = match[3]
+        let origin = match[1]
+
+        if (origin.length === 3) {
+          if (this.dataService.aminoAcid3to1[origin]) {
+            origin = this.dataService.aminoAcid3to1[origin].slice()
+          }
+        }
+        if (mutated.length === 3) {
+          if (this.dataService.aminoAcid3to1[mutated]) {
+            mutated = this.dataService.aminoAcid3to1[mutated].slice()
+          }
+        }
+        if (origin.length === 1 && mutated.length === 1) {
+          if (!this.settings.settings.selected[position]) {
+            this.settings.settings.selected[position] = {}
+          }
+          if (!this.settings.settings.selected[position][origin]) {
+            this.settings.settings.selected[position][origin] = {}
+          }
+          if (!this.settings.settings.selected[position][origin][mutated]) {
+            this.settings.settings.selected[position][origin][mutated] = {}
+          }
+
+          if (!this.settings.settings.selected[position][origin][mutated][e.form.name]) {
+            let hovertext: string = `
+            <b>${e.form.name}</b> <br>
+            Variant: ${row[e.form.variant]} <br>
+            Position: ${position} <br>
+            ${e.form.pathogenicity}: ${row[e.form.pathogenicity]} <br>
+            `
+            for (const c of e.form.columnsToKeep) {
+              hovertext += `${c}: ${row[c]} <br>`
+            }
+            this.settings.settings.selected[position][origin][mutated][e.form.name] = {
+              name: e.form.name, row: row,
+              hovertext: hovertext, pathogenicity: row[e.form.pathogenicity]
+            }
+          }
+        }
+      }
+    })
+
+
   }
 
   saveFile() {
@@ -256,11 +264,46 @@ export class HomeComponent implements AfterViewInit{
     const ref = this.dialog.open(ImportedFileManagementComponent)
     ref.afterClosed().subscribe((data: any) => {
       if (data) {
-        if (data.remove === true) {
-          this.settings.settings.removeDataset(data.file)
+        if (data.subsetDialog) {
+          const filterRef = this.dialog.open(DataFilterDialogComponent)
+          filterRef.componentInstance.file = this.settings.settings.importedFile[data.file]
+          filterRef.afterClosed().subscribe((filterData: FilterColumn[]) => {
+            let df = this.settings.settings.importedFile[data.file].data.where(row => row[this.settings.settings.importedFile[data.file].form.variant] !== "").bake()
+            for (const f of filterData){
+              const filterArray = f.filterValue.split("@")
+              switch (f.filterType) {
+                case "in":
+                  df = df.where(row => f.filterValue.includes(row[f.column])).bake()
+                  break
+              }
+            }
+            const newSubsetFile = Object.assign({}, this.settings.settings.importedFile[data.file])
+            newSubsetFile.data = df
+            newSubsetFile.form.name = newSubsetFile.form.name + " (subset)"
+            this.settings.settings.importedFile[newSubsetFile.form.name] = newSubsetFile
+            this.settings.settings.filter[newSubsetFile.form.name] = filterData
+            this.data.currentData[newSubsetFile.form.name] = df
+            this.processDataFrameForOverlap(df, newSubsetFile)
+            df.getSeries(newSubsetFile.form.pathogenicity).distinct().bake().forEach((pathogenicity: string) => {
+              if (!this.settings.settings.pathogenicityFilter[newSubsetFile.form.name]) {
+                this.settings.settings.pathogenicityFilter[newSubsetFile.form.name] = {}
+              }
+              if (!this.settings.settings.pathogenicityFilter[newSubsetFile.form.name][pathogenicity]) {
+                this.settings.settings.pathogenicityFilter[newSubsetFile.form.name][pathogenicity] = true
+              }
+            })
+            this.data.reDrawTrigger.next(true)
+            this.data.updateTrigger.next(true)
+            this.snackbar.open("Subset successful", "OK", {duration: 2000})
+          })
+        } else {
+          if (data.remove === true) {
+            this.settings.settings.removeDataset(data.file)
+          }
+          this.data.reDrawTrigger.next(true)
+          this.data.updateTrigger.next(true)
         }
-        this.data.reDrawTrigger.next(true)
-        this.data.updateTrigger.next(true)
+
       }
     })
   }

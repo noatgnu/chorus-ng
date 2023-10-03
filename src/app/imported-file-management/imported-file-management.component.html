@@ -2,7 +2,7 @@
 <div mat-dialog-content>
   <form [formGroup]="form">
     <div>
-      <mat-form-field>
+      <mat-form-field style="margin-right: 20px">
         <mat-label>
           Dataset selection
         </mat-label>
@@ -12,6 +12,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <button *ngIf="form.value.file !== ''" mat-raised-button color="primary" [mat-dialog-close]="{file: form.value.file, subsetDialog: true}">Subset Data</button>
     </div>
     <div>
       <mat-checkbox formControlName="remove">Remove dataset</mat-checkbox>

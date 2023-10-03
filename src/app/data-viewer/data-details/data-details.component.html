@@ -4,7 +4,7 @@
   <mat-chip-listbox>
     <ng-container *ngFor="let item of dataLabels">
       <mat-chip  *ngIf="settings.settings.userSelection.includes(item)" color="primary">
-        {{item}}
+        {{settings.settings.legendRename[item]}}
       </mat-chip>
     </ng-container>
 
@@ -15,7 +15,7 @@
     <mat-expansion-panel *ngIf="settings.settings.importedFile[l]">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          {{l}}
+          {{settings.settings.legendRename[l]}}
         </mat-panel-title>
         <mat-panel-description>
           {{data[l].pathogenicity}}
