@@ -13,6 +13,7 @@ import {fromCSV, IDataFrame} from "data-forge";
 import {VariantSimple} from "../variant-simple";
 import {ImportedFileManagementComponent} from "../imported-file-management/imported-file-management.component";
 import {ActivatedRoute} from "@angular/router";
+import {DataRenameDialogComponent} from "../data-rename-dialog/data-rename-dialog.component";
 
 @Component({
   selector: 'app-home',
@@ -280,6 +281,9 @@ export class HomeComponent implements AfterViewInit{
             const newSubsetFile = Object.assign({}, this.settings.settings.importedFile[data.file])
             newSubsetFile.data = df
             newSubsetFile.form.name = newSubsetFile.form.name + " (subset)"
+            while (this.settings.settings.importedFile[newSubsetFile.form.name]) {
+              newSubsetFile.form.name += " (subset)"
+            }
             this.settings.settings.importedFile[newSubsetFile.form.name] = newSubsetFile
             this.settings.settings.filter[newSubsetFile.form.name] = filterData
             this.data.currentData[newSubsetFile.form.name] = df
@@ -292,9 +296,20 @@ export class HomeComponent implements AfterViewInit{
                 this.settings.settings.pathogenicityFilter[newSubsetFile.form.name][pathogenicity] = true
               }
             })
-            this.data.reDrawTrigger.next(true)
-            this.data.updateTrigger.next(true)
-            this.snackbar.open("Subset successful", "OK", {duration: 2000})
+            const renameRef = this.dialog.open(DataRenameDialogComponent)
+            renameRef.componentInstance.originalName = newSubsetFile.form.name.slice()
+            renameRef.afterClosed().subscribe((renameData: any) => {
+              if (renameData) {
+                if (renameData !== newSubsetFile.form.name) {
+                  this.settings.settings.updateDatasetName(newSubsetFile.form.name, renameData)
+                }
+              }
+              this.data.reDrawTrigger.next(true)
+              this.data.updateTrigger.next(true)
+              this.snackbar.open("Subset successful", "OK", {duration: 2000})
+            })
+
+
           })
         } else {
           if (data.remove === true) {

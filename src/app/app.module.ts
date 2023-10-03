@@ -43,6 +43,7 @@ import { ImportedFileManagementComponent } from './imported-file-management/impo
 import { HomeComponent } from './home/home.component';
 import { AnnotationEditorComponent } from './variant-plot/annotation-editor/annotation-editor.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { DataRenameDialogComponent } from './data-rename-dialog/data-rename-dialog.component';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -64,7 +65,8 @@ PlotlyModule.plotlyjs = PlotlyJS;
     PrebuiltSessionSelectionComponent,
     ImportedFileManagementComponent,
     HomeComponent,
-    AnnotationEditorComponent
+    AnnotationEditorComponent,
+    DataRenameDialogComponent
   ],
     imports: [
         BrowserModule,

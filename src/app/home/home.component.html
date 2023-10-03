@@ -1,5 +1,5 @@
 <mat-drawer-container autosize class="drawer-container">
-  <mat-drawer #drawer mode="side" class="drawer-sidenav-content">
+  <mat-drawer #drawer mode="over" class="drawer-sidenav-content">
     <div style="display: flex; justify-content: center; padding: 20px">
       <div aria-label="circular logo" class="image-cropper">
         <div class="chorus-logo">
@@ -47,6 +47,10 @@
   </div>
   <div style="padding: 20px">
     <app-data-viewer [data]="filteredData" *ngIf="filteredData.length>0"></app-data-viewer>
+  </div>
+  <div aria-label="data resource citation" style="display: flex; justify-content: center; padding-top: 20px">
+    <p>Alphamissense dataset used was obtained from <i>Jun Cheng et al. ,Accurate proteome-wide missense variant effect prediction with AlphaMissense. Science 381, eadg7492 (2023).DOI: <a href="https://doi.org/10.1126/science.adg7492" target="_blank">10.1126/science.adg7492</a></i></p>
+
   </div>
 </mat-drawer-container>
 

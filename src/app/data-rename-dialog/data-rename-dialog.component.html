@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Dataset Rename</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field>
+      <input matInput formControlName="name" placeholder="New Dataset Name">
+    </mat-form-field>
+  </form>
+
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="form.value.name" [disabled]="!form.valid">Save</button>
+</div>

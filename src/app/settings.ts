@@ -54,6 +54,28 @@ export class Settings {
         }
       }
     }
+  }
 
+  updateDatasetName(oldName: string, newName: string) {
+    this.importedFile[newName] = this.importedFile[oldName]
+    this.filter[newName] = this.filter[oldName]
+    this.pathogenicityFilter[newName] = this.pathogenicityFilter[oldName]
+    if (this.visible[oldName]) {
+      this.visible[newName] = this.visible[oldName]
+    }
+    if (this.color_map[oldName]) {
+      this.color_map[newName] = this.color_map[oldName]
+    }
+    for (const pos in this.selected) {
+      for (const orig in this.selected[pos]) {
+        for (const mut in this.selected[pos][orig]) {
+          if (this.selected[pos][orig][mut][oldName]) {
+            this.selected[pos][orig][mut][newName] = this.selected[pos][orig][mut][oldName]
+            delete this.selected[pos][orig][mut][oldName]
+          }
+        }
+      }
+    }
+    this.removeDataset(oldName)
   }
 }
