@@ -368,7 +368,7 @@ export class HomeComponent implements AfterViewInit{
   }
 
   dataOverlapHandler() {
-    const ref = this.dialog.open(DataFindOverlapComponent)
+    const ref = this.dialog.open(DataFindOverlapComponent, {disableClose: true})
     ref.componentInstance.dataLabels = Object.keys(this.settings.settings.importedFile)
     ref.afterClosed().subscribe((data: any) => {
       if (data) {
