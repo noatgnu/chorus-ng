@@ -45,6 +45,10 @@ export class Settings {
     delete this.pathogenicityFilter[dataset]
     delete this.visible[dataset]
     delete this.color_map[dataset]
+    const legendPos = this.legendOrder.indexOf(dataset)
+    if (legendPos > -1) {
+      this.legendOrder.splice(legendPos, 1)
+    }
     for (const pos in this.selected) {
       for (const orig in this.selected[pos]) {
         for (const mut in this.selected[pos][orig]) {
@@ -57,25 +61,65 @@ export class Settings {
   }
 
   updateDatasetName(oldName: string, newName: string) {
-    this.importedFile[newName] = this.importedFile[oldName]
-    this.filter[newName] = this.filter[oldName]
-    this.pathogenicityFilter[newName] = this.pathogenicityFilter[oldName]
+    this.importedFile[newName] = Object.assign({}, this.importedFile[oldName])
+    this.filter[newName] = this.filter[oldName].map((a: any) => {
+      return Object.assign({}, a)
+    })
+    this.pathogenicityFilter[newName] = Object.assign({}, this.pathogenicityFilter[oldName])
     if (this.visible[oldName]) {
-      this.visible[newName] = this.visible[oldName]
+      this.visible[newName] = Object.assign({},this.visible[oldName])
     }
     if (this.color_map[oldName]) {
-      this.color_map[newName] = this.color_map[oldName]
+      this.color_map[newName] = Object.assign({},this.color_map[oldName])
     }
+    const legendPos = this.legendOrder.indexOf(oldName)
+    if (legendPos > -1) {
+      this.legendOrder[legendPos] = newName
+    }
+
     for (const pos in this.selected) {
       for (const orig in this.selected[pos]) {
         for (const mut in this.selected[pos][orig]) {
           if (this.selected[pos][orig][mut][oldName]) {
-            this.selected[pos][orig][mut][newName] = this.selected[pos][orig][mut][oldName]
+            this.selected[pos][orig][mut][newName] = Object.assign({},this.selected[pos][orig][mut][oldName])
+            this.selected[pos][orig][mut][newName].hovertext = this.selected[pos][orig][mut][newName].hovertext.replace(oldName, newName)
             delete this.selected[pos][orig][mut][oldName]
           }
         }
       }
     }
     this.removeDataset(oldName)
+  }
+
+  removeUserSelection(selection: string) {
+    delete this.selection[selection]
+    const pos = this.userSelection.indexOf(selection)
+    if (pos > -1) {
+      this.userSelection.splice(pos, 1)
+    }
+    if (this.pathogenicityFilter[selection]) {
+      delete this.pathogenicityFilter[selection]
+    }
+    if (this.visible[selection]) {
+      delete this.visible[selection]
+    }
+    if (this.color_map[selection]) {
+      delete this.color_map[selection]
+    }
+
+    const legendPos = this.legendOrder.indexOf(selection)
+    if (legendPos > -1) {
+      this.legendOrder.splice(legendPos, 1)
+    }
+
+    for (const pos in this.selected) {
+      for (const orig in this.selected[pos]) {
+        for (const mut in this.selected[pos][orig]) {
+          if (this.selected[pos][orig][mut][selection]) {
+            delete this.selected[pos][orig][mut][selection]
+          }
+        }
+      }
+    }
   }
 }

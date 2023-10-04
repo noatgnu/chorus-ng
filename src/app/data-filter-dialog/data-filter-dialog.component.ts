@@ -11,6 +11,7 @@ import {DataFrame} from "data-forge";
 export class DataFilterDialogComponent {
   @Input() file: ImportedFile = {columns: [], data: new DataFrame(), dataType: "standard", form: {}, originalData: "", originalFileName: ""}
   filters: FilterColumn[] = []
+  filterTypes: string[] = ["in", "equals", "greater than", "less than"]
   constructor() {}
 
   addFilter() {

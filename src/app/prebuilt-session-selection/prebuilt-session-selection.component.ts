@@ -22,6 +22,10 @@ export class PrebuiltSessionSelectionComponent {
     {
       name: "LRRK2 with MDSGene and PDBrowser",
       value: "MDSGene.pdbrowser"
+    },
+    {
+      name: "LRRK2 with MDSGene, PDBrowser, gnomAD and ACMG",
+      value: "ACMG.MDSGene.PDBrowser.gnomAD"
     }
   ]
   constructor(private fb: FormBuilder, private http: HttpClient) { }

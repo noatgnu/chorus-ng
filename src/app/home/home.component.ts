@@ -14,6 +14,8 @@ import {VariantSimple} from "../variant-simple";
 import {ImportedFileManagementComponent} from "../imported-file-management/imported-file-management.component";
 import {ActivatedRoute} from "@angular/router";
 import {DataRenameDialogComponent} from "../data-rename-dialog/data-rename-dialog.component";
+import {DataFindOverlapComponent} from "../data-find-overlap/data-find-overlap.component";
+import {UserSelectionManagementComponent} from "../user-selection-management/user-selection-management.component";
 
 @Component({
   selector: 'app-home',
@@ -63,12 +65,7 @@ export class HomeComponent implements AfterViewInit{
     ref.afterClosed().subscribe((data: FilterColumn[]) => {
       let df = e.data.where(row => row[e.form.variant] !== "").bake()
       for (const f of data){
-        const filterArray = f.filterValue.split("@")
-        switch (f.filterType) {
-          case "in":
-            df = df.where(row => f.filterValue.includes(row[f.column])).bake()
-            break
-        }
+        df = this.filterData(f, df);
       }
 
       this.processDataFrameForOverlap(df, e);
@@ -88,6 +85,28 @@ export class HomeComponent implements AfterViewInit{
       this.dataService.updateTrigger.next(true)
       this.snackbar.open("File processed", "OK", {duration: 2000})
     })
+  }
+
+  private filterData(f: FilterColumn, df: IDataFrame<number, any>) {
+    const filterArray = f.filterValue.split("@")
+    switch (f.filterType) {
+      case "in":
+        df = df.where((row: any) => filterArray.includes(row[f.column])).bake()
+        break
+      case "equals":
+        df = df.where((row: any) => row[f.column] === f.filterValue).bake()
+        break
+      case "greater than":
+        df = df.where((row: any) => {
+          console.log(parseFloat(row[f.column]) > parseFloat(f.filterValue))
+          return parseFloat(row[f.column]) > parseFloat(f.filterValue)
+        }).bake()
+        break
+      case "less than":
+        df = df.where((row: any) =>  parseFloat(row[f.column]) < parseFloat(f.filterValue)).bake()
+        break
+    }
+    return df;
   }
 
   private processDataFrameForOverlap(df: IDataFrame<number, any>, e: ImportedFile) {
@@ -188,11 +207,12 @@ export class HomeComponent implements AfterViewInit{
           const data = this.settings.settings.importedFile[i].data
           const form = this.settings.settings.importedFile[i].form
           let df = data.where(row => row[form.variant] !== "").bake()
-          for (const f of this.settings.settings.filter[i]){
-            switch (f.filterType) {
-              case "in":
-                df = df.where(row => f.filterValue === row[f.column]).bake()
-                break
+          if (this.settings.settings.filter[i]) {
+            console.log(i)
+            console.log(this.settings.settings.filter[i])
+            for (const f of this.settings.settings.filter[i]){
+              console.log(f)
+              df = this.filterData(f, df)
             }
           }
           this.data.currentData[form.name] = df
@@ -214,15 +234,18 @@ export class HomeComponent implements AfterViewInit{
     reader.readAsText(file)
   }
 
-  searchVariantsHandler(e: VariantSimple[]) {
+  searchVariantsHandler(e: VariantSimple[], dataSetname: string = "") {
     if (e.length > 0) {
       this.settings.settings.selectionNumber++
-      let dataSetname = `(Search #${this.settings.settings.selectionNumber})`
-      if (e.length === 1) {
-        dataSetname = `${e[0].original}${e[0].position}${e[0].mutated} ${dataSetname}`
-      } else {
-        dataSetname = `${e.length} variants ${dataSetname}`
+      if (dataSetname === "") {
+        let dataSetname = `(Search #${this.settings.settings.selectionNumber})`
+        if (e.length === 1) {
+          dataSetname = `${e[0].original}${e[0].position}${e[0].mutated} ${dataSetname}`
+        } else {
+          dataSetname = `${e.length} variants ${dataSetname}`
+        }
       }
+
       if (!this.settings.settings.userSelection.includes(dataSetname)) {
         this.settings.settings.userSelection.push(dataSetname)
         if (!this.settings.settings.pathogenicityFilter[dataSetname]) {
@@ -269,14 +292,9 @@ export class HomeComponent implements AfterViewInit{
           const filterRef = this.dialog.open(DataFilterDialogComponent)
           filterRef.componentInstance.file = this.settings.settings.importedFile[data.file]
           filterRef.afterClosed().subscribe((filterData: FilterColumn[]) => {
-            let df = this.settings.settings.importedFile[data.file].data.where(row => row[this.settings.settings.importedFile[data.file].form.variant] !== "").bake()
+            let df = this.dataService.currentData[data.file].where((row:any) => row[this.settings.settings.importedFile[data.file].form.variant] !== "").bake()
             for (const f of filterData){
-              const filterArray = f.filterValue.split("@")
-              switch (f.filterType) {
-                case "in":
-                  df = df.where(row => f.filterValue.includes(row[f.column])).bake()
-                  break
-              }
+              df = this.filterData(f, df)
             }
             const newSubsetFile = Object.assign({}, this.settings.settings.importedFile[data.file])
             newSubsetFile.data = df
@@ -286,6 +304,8 @@ export class HomeComponent implements AfterViewInit{
             }
             this.settings.settings.importedFile[newSubsetFile.form.name] = newSubsetFile
             this.settings.settings.filter[newSubsetFile.form.name] = filterData
+            // @ts-ignore
+            this.settings.settings.importedFile[newSubsetFile.form.name].originalData = df.toCSV({delimiter: "\t"})
             this.data.currentData[newSubsetFile.form.name] = df
             this.processDataFrameForOverlap(df, newSubsetFile)
             df.getSeries(newSubsetFile.form.pathogenicity).distinct().bake().forEach((pathogenicity: string) => {
@@ -344,6 +364,51 @@ export class HomeComponent implements AfterViewInit{
   copySessionUrl() {
     navigator.clipboard.writeText(this.currentSessionUrl).then(() => {
       this.snackbar.open("Session URL copied to clipboard", "OK", {duration: 2000})
+    })
+  }
+
+  dataOverlapHandler() {
+    const ref = this.dialog.open(DataFindOverlapComponent)
+    ref.componentInstance.dataLabels = Object.keys(this.settings.settings.importedFile)
+    ref.afterClosed().subscribe((data: any) => {
+      if (data) {
+        const variants: VariantSimple[] = []
+        for (const p in this.settings.settings.selected) {
+          for (const o in this.settings.settings.selected[p]) {
+            for (const m in this.settings.settings.selected[p][o]) {
+              for (const d in this.settings.settings.selected[p][o][m]) {
+                let matchedCount = 0
+                for (const d of data) {
+                  if (this.settings.settings.selected[p][o][m][d]) {
+                    matchedCount++
+                  }
+                }
+                if (matchedCount === data.length) {
+                  variants.push({position: parseInt(p), original: o, mutated: m})
+                }
+              }
+            }
+          }
+        }
+        if (variants.length > 0) {
+          this.searchVariantsHandler(variants, data.join(", "))
+        }
+      }
+    })
+
+  }
+
+  userSelectionManagementHandler() {
+    const ref = this.dialog.open(UserSelectionManagementComponent)
+    ref.componentInstance.selected = this.settings.settings.userSelection.slice()
+    ref.afterClosed().subscribe((data: any) => {
+      if (data) {
+        if (data.remove) {
+          this.settings.settings.removeUserSelection(data.selected)
+        }
+        this.data.reDrawTrigger.next(true)
+        this.data.updateTrigger.next(true)
+      }
     })
   }
 }

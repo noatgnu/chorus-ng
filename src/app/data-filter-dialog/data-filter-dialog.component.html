@@ -14,10 +14,20 @@
       </mat-form-field>
       <mat-form-field style="margin-right: 20px">
         <mat-label>
+          Select Metadata Column
+        </mat-label>
+        <mat-select [(ngModel)]="f.filterType" [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let ft of filterTypes" [value]="ft">
+            {{ft}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field style="margin-right: 20px">
+        <mat-label>
           Filter For
         </mat-label>
         <input matInput type="text" [(ngModel)]="f.filterValue" [ngModelOptions]="{standalone: true}">
-        <mat-hint>If matching with multiple values, they must be delimited by a "@"</mat-hint>
+        <mat-hint>If matching with multiple values using "in" operation, they must be delimited by a "@"</mat-hint>
       </mat-form-field>
       <div>
         <button mat-raised-button color="warn" (click)="removeFilter(ind)">-</button>
@@ -29,6 +39,6 @@
   <button mat-raised-button color="primary" (click)="addFilter()">+</button>
 </div>
 <div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="[]">Skip</button>
+  <button mat-button mat-dialog-close>Skip</button>
   <button mat-button [mat-dialog-close]="filters" cdkFocusInitial>Filter</button>
 </div>

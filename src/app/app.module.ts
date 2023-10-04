@@ -44,6 +44,8 @@ import { HomeComponent } from './home/home.component';
 import { AnnotationEditorComponent } from './variant-plot/annotation-editor/annotation-editor.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { DataRenameDialogComponent } from './data-rename-dialog/data-rename-dialog.component';
+import { DataFindOverlapComponent } from './data-find-overlap/data-find-overlap.component';
+import { UserSelectionManagementComponent } from './user-selection-management/user-selection-management.component';
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -66,7 +68,9 @@ PlotlyModule.plotlyjs = PlotlyJS;
     ImportedFileManagementComponent,
     HomeComponent,
     AnnotationEditorComponent,
-    DataRenameDialogComponent
+    DataRenameDialogComponent,
+    DataFindOverlapComponent,
+    UserSelectionManagementComponent
   ],
     imports: [
         BrowserModule,

@@ -24,7 +24,7 @@
       Session: {{currentSessionID}} <mat-icon>content_paste</mat-icon>
     </button>
 
-    <button aria-label="Data management" mat-icon-button (click)="dataManagementHandler()">
+    <button aria-label="Data management" mat-icon-button [matMenuTriggerFor]="dataManagementMenu">
       <mat-icon>storage</mat-icon>
     </button>
     <button aria-label="Save file" mat-icon-button [matMenuTriggerFor]="saveMenu">
@@ -57,5 +57,10 @@
 <mat-menu #saveMenu>
   <button mat-menu-item (click)="saveFile()">Save to file</button>
   <button mat-menu-item (click)="saveFileToServer()">Save to server</button>
+</mat-menu>
+<mat-menu #dataManagementMenu>
+  <button mat-menu-item (click)="dataManagementHandler()">Imported Data Management</button>
+  <button mat-menu-item (click)="dataOverlapHandler()">Find Overlap</button>
+  <button mat-menu-item (click)="userSelectionManagementHandler()">User Selection Management</button>
 </mat-menu>
 <input type="file" id="file" #reloadFile hidden style="display: none" (change)="reloadFileHandler($event)">

@@ -8,7 +8,7 @@ import {Variant} from "./protein-query";
   providedIn: 'root'
 })
 export class DataService {
-  currentData: { [key: string]: any } = {}
+  currentData: { [key: string]: IDataFrame } = {}
   reDrawTrigger: Subject<boolean> = new Subject<boolean>()
   updateTrigger: Subject<boolean> = new Subject<boolean>()
   annotationTrigger: Subject<{ variant: Variant, status: boolean }> = new Subject<{variant: Variant, status: boolean}>()

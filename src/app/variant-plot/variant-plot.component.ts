@@ -154,7 +154,7 @@ export class VariantPlotComponent {
                         size: 12,
                         line: {
                           width: 1,
-                          color: 'rgba(0,0,0,0.5)',
+                          color: 'rgba(0,0,0,0.01)',
                         }
                       },
                       name: groupName,
