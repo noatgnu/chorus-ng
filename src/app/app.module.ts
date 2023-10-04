@@ -46,6 +46,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { DataRenameDialogComponent } from './data-rename-dialog/data-rename-dialog.component';
 import { DataFindOverlapComponent } from './data-find-overlap/data-find-overlap.component';
 import { UserSelectionManagementComponent } from './user-selection-management/user-selection-management.component';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -100,11 +101,12 @@ PlotlyModule.plotlyjs = PlotlyJS;
         MatChipsModule,
         NgOptimizedImage,
         ServiceWorkerModule.register('ngsw-worker.js', {
-          enabled: !isDevMode(),
-          // Register the ServiceWorker as soon as the application is stable
-          // or after 30 seconds (whichever comes first).
-          registrationStrategy: 'registerWhenStable:30000'
-        })
+            enabled: !isDevMode(),
+            // Register the ServiceWorker as soon as the application is stable
+            // or after 30 seconds (whichever comes first).
+            registrationStrategy: 'registerWhenStable:30000'
+        }),
+        MatProgressBarModule
     ],
   providers: [],
   bootstrap: [AppComponent]

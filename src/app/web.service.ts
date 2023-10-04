@@ -29,7 +29,7 @@ export class WebService {
     // download session json data and check if there is an url property, if there is then download that file and return its content instead
     const firstResult = await this.http.get<{url: string}>(`${this.baseUrl}/api/chorus_session/${sessionID}/download/`, {responseType: 'json', observe: 'body'}).toPromise()
     if (firstResult) {
-      return await this.http.get(firstResult.url, {responseType: 'json', observe: "body"}).toPromise()
+      return await this.http.get(firstResult.url, {responseType: 'json', observe: "events", reportProgress: true}).toPromise()
     } else {
       return null
     }

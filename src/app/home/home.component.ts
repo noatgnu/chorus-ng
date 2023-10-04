@@ -16,6 +16,7 @@ import {ActivatedRoute} from "@angular/router";
 import {DataRenameDialogComponent} from "../data-rename-dialog/data-rename-dialog.component";
 import {DataFindOverlapComponent} from "../data-find-overlap/data-find-overlap.component";
 import {UserSelectionManagementComponent} from "../user-selection-management/user-selection-management.component";
+import {HttpEventType} from "@angular/common/http";
 
 @Component({
   selector: 'app-home',
@@ -28,14 +29,27 @@ export class HomeComponent implements AfterViewInit{
   filteredData: Variant[] = []
   currentSessionID = ""
   currentSessionUrl = ""
+  sessionDownloadProgress = 0
   constructor(private route: ActivatedRoute, private web: WebService, private dialog: MatDialog, private data: DataService, private snackbar: MatSnackBar, public settings: SettingsService, private dataService: DataService){
     this.route.params.subscribe(params => {
       if (params['settings']) {
         if (params['settings'] !== "") {
           this.currentSessionID = params['settings']
           this.currentSessionUrl = location.origin + "/#/" + this.currentSessionID
-          this.web.downloadSession(params['settings']).then((data: any) => {
-            this.restoreFile(data)
+          this.sessionDownloadProgress = 0
+          this.web.downloadSession(params['settings']).then((data) => {
+            console.log(data)
+            if (data) {
+              if (data.type === HttpEventType.DownloadProgress) {
+                if (data.total) {
+                  this.sessionDownloadProgress = Math.round(100 * data.loaded / data.total)
+                }
+              } else if (data.type === HttpEventType.Response) {
+                this.sessionDownloadProgress = 100
+                this.restoreFile(data.body)
+              }
+            }
+
           })
         }
       }
@@ -191,6 +205,7 @@ export class HomeComponent implements AfterViewInit{
     this.snackbar.open("Downloading Alphamissense data for "+initialSettings.protein, "OK", {duration: 2000})
     req.then((data) => {
       if (data) {
+        console.log(data)
         this.results = data.results
         this.settings.settings = new Settings()
         for (const i in initialSettings.importedFile) {
@@ -217,6 +232,7 @@ export class HomeComponent implements AfterViewInit{
           }
           this.data.currentData[form.name] = df
         }
+        console.log(this.results)
         this.filteredData = this.results[0].variants.filter((row: Variant) => {
           return this.settings.settings.selection[`${row.original}${row.position}${row.mutated}`] !== undefined
         })

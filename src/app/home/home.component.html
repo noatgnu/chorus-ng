@@ -43,6 +43,11 @@
     </div>
   </div>
   <div style="padding: 20px">
+    <mat-progress-bar mode="determinate" [value]="sessionDownloadProgress"></mat-progress-bar>
+  </div>
+
+
+  <div style="padding: 20px">
     <app-variant-plot *ngIf="results.length > 0" [data]="results[0]" (selected)="searchVariantsHandler($event)"></app-variant-plot>
   </div>
   <div style="padding: 20px">
@@ -50,7 +55,6 @@
   </div>
   <div aria-label="data resource citation" style="display: flex; justify-content: center; padding-top: 20px">
     <p>Alphamissense dataset used was obtained from <i>Jun Cheng et al. ,Accurate proteome-wide missense variant effect prediction with AlphaMissense. Science 381, eadg7492 (2023).DOI: <a href="https://doi.org/10.1126/science.adg7492" target="_blank">10.1126/science.adg7492</a></i></p>
-
   </div>
 </mat-drawer-container>
 
