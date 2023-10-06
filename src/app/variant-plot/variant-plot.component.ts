@@ -105,9 +105,7 @@ export class VariantPlotComponent {
     this.dataService.reDrawTrigger.subscribe((data) => {
       if (data) {
         this.highlightDatalabels = Object.keys(this.settings.settings.specialHighlight)
-        this.form = this.fb.group({
-          showbackground: [this.settings.settings.showbackground],
-        })
+        this.form.controls.showbackground.setValue(this.settings.settings.showbackground)
         this.drawGraph()
       }
     })
