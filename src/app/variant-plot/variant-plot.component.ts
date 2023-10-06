@@ -494,6 +494,7 @@ export class VariantPlotComponent {
           if (this.settings.settings.selected[data.position][data.original]) {
             if (this.settings.settings.selected[data.position][data.original][data.mutated]) {
               selected.push({position: data.position, original: data.original, mutated: data.mutated})
+              console.log(selected)
             }
           }
         }

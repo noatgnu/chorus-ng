@@ -250,14 +250,15 @@ export class HomeComponent implements AfterViewInit{
     if (e.length > 0) {
       this.settings.settings.selectionNumber++
       if (dataSetname === "") {
-        let dataSetname = `(Search #${this.settings.settings.selectionNumber})`
+
+        dataSetname = `(Search #${this.settings.settings.selectionNumber})`
         if (e.length === 1) {
           dataSetname = `${e[0].original}${e[0].position}${e[0].mutated} ${dataSetname}`
         } else {
           dataSetname = `${e.length} variants ${dataSetname}`
         }
       }
-
+      console.log(dataSetname)
       if (!this.settings.settings.userSelection.includes(dataSetname)) {
         this.settings.settings.userSelection.push(dataSetname)
         if (!this.settings.settings.pathogenicityFilter[dataSetname]) {
@@ -266,6 +267,7 @@ export class HomeComponent implements AfterViewInit{
         if (!this.settings.settings.pathogenicityFilter[dataSetname]['']) {
           this.settings.settings.pathogenicityFilter[dataSetname][''] = true
         }
+        console.log(this.settings.settings.userSelection)
         e.forEach((variant: VariantSimple) => {
           if (!this.settings.settings.selected[variant.position]) {
             this.settings.settings.selected[variant.position] = {}
@@ -287,6 +289,7 @@ export class HomeComponent implements AfterViewInit{
         this.filteredData = this.results[0].variants.filter((row: Variant) => {
           return this.settings.settings.selection[`${row.original}${row.position}${row.mutated}`] !== undefined
         })
+        console.log(this.filteredData)
       }
     }
   }
