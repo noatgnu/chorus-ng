@@ -138,17 +138,18 @@ export class VariantPlotComponent {
             //let groupName: string = `Alphamissense(${v.pathogenicity})`
 
             let hovertext: string = `<b>Alphamissense</b><br>Pathogenicity: ${v.pathogenicity}<br>Score: ${v.score}<br>Variants: ${v.original}${v.position}${v.mutated}<br>`
+            let nonHighlightCount = 0
             for (const d in this.settings.settings.selected[v.position][v.original][v.mutated]) {
               if (this.settings.settings.specialHighlight[d]) {
                 hovertext = hovertext + this.settings.settings.selected[v.position][v.original][v.mutated][d].hovertext
-              }
-              else if (this.settings.settings.pathogenicityFilter[d][this.settings.settings.selected[v.position][v.original][v.mutated][d].pathogenicity] === true) {
+              } else if (this.settings.settings.pathogenicityFilter[d][this.settings.settings.selected[v.position][v.original][v.mutated][d].pathogenicity] === true) {
                 //groupName = groupName + " + " + d
                 hovertext = hovertext + this.settings.settings.selected[v.position][v.original][v.mutated][d].hovertext
+                nonHighlightCount++
               }
             }
             for (const d in this.settings.settings.selected[v.position][v.original][v.mutated]) {
-              if (this.settings.settings.specialHighlight[d]) {
+              if (this.settings.settings.specialHighlight[d] && nonHighlightCount >0) {
                 const groupName = d
                 if (groupName !== ``) {
                   if (!temp[groupName]) {
