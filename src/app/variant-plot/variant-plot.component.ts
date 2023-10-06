@@ -13,6 +13,8 @@ import {CustomDomainsComponent} from "./custom-domains/custom-domains.component"
 import {FormBuilder} from "@angular/forms";
 import {VariantSimple} from "../variant-simple";
 import {AnnotationEditorComponent} from "./annotation-editor/annotation-editor.component";
+import {HighlightDatasetsComponent} from "./highlight-datasets/highlight-datasets.component";
+import {MatSelectionListChange} from "@angular/material/list";
 
 @Component({
   selector: 'app-variant-plot',
@@ -96,9 +98,16 @@ export class VariantPlotComponent {
   form = this.fb.group({
     showbackground: [true],
   })
+
+  highlightDatalabels: string[] = []
   constructor(private web: WebService, public settings: SettingsService, private dialog: MatDialog, private dataService: DataService, private fb: FormBuilder) {
+    this.highlightDatalabels = Object.keys(this.settings.settings.specialHighlight)
     this.dataService.reDrawTrigger.subscribe((data) => {
       if (data) {
+        this.highlightDatalabels = Object.keys(this.settings.settings.specialHighlight)
+        this.form = this.fb.group({
+          showbackground: [this.settings.settings.showbackground],
+        })
         this.drawGraph()
       }
     })
@@ -117,7 +126,6 @@ export class VariantPlotComponent {
             this.addAnnotationLabelForData(data.variant)
           }
         }
-        console.log(this.settings.settings.annotations)
       }
     })
   }
@@ -133,16 +141,18 @@ export class VariantPlotComponent {
 
             let hovertext: string = `<b>Alphamissense</b><br>Pathogenicity: ${v.pathogenicity}<br>Score: ${v.score}<br>Variants: ${v.original}${v.position}${v.mutated}<br>`
             for (const d in this.settings.settings.selected[v.position][v.original][v.mutated]) {
-              if (this.settings.settings.pathogenicityFilter[d][this.settings.settings.selected[v.position][v.original][v.mutated][d].pathogenicity] === true) {
+              if (this.settings.settings.specialHighlight[d]) {
+                hovertext = hovertext + this.settings.settings.selected[v.position][v.original][v.mutated][d].hovertext
+              }
+              else if (this.settings.settings.pathogenicityFilter[d][this.settings.settings.selected[v.position][v.original][v.mutated][d].pathogenicity] === true) {
                 //groupName = groupName + " + " + d
                 hovertext = hovertext + this.settings.settings.selected[v.position][v.original][v.mutated][d].hovertext
               }
             }
             for (const d in this.settings.settings.selected[v.position][v.original][v.mutated]) {
-              if (this.settings.settings.pathogenicityFilter[d][this.settings.settings.selected[v.position][v.original][v.mutated][d].pathogenicity] === true) {
+              if (this.settings.settings.specialHighlight[d]) {
                 const groupName = d
                 if (groupName !== ``) {
-
                   if (!temp[groupName]) {
                     temp[groupName] = {
                       x: [],
@@ -151,7 +161,7 @@ export class VariantPlotComponent {
                       mode: 'markers',
                       type: 'scattergl',
                       marker: {
-                        size: 12,
+                        size: 6,
                         line: {
                           width: 1,
                           color: 'rgba(0,0,0,0.01)',
@@ -162,6 +172,48 @@ export class VariantPlotComponent {
                       yaxis: 'y',
                       visible: true,
                       data: [],
+                      showlegend: false
+                    }
+                    if (!this.settings.settings.legendRename[groupName]) {
+                      this.settings.settings.legendRename[groupName] = groupName
+                    } else {
+                      temp[groupName].name = this.settings.settings.legendRename[groupName].slice()
+                    }
+                    if (!this.settings.settings.legendOrder.includes(groupName)) {
+                      this.settings.settings.legendOrder.push(groupName)
+                    }
+                    if (this.settings.settings.specialHighlight[d].highlight === true) {
+                      temp[groupName].marker.size = 12
+                    }
+                  }
+                  temp[groupName].x.push(v.position)
+                  temp[groupName].y.push(v.score)
+                  temp[groupName].text.push(hovertext)
+                  temp[groupName].data.push(v)
+                }
+              } else if (this.settings.settings.pathogenicityFilter[d][this.settings.settings.selected[v.position][v.original][v.mutated][d].pathogenicity] === true) {
+                const groupName = d
+                if (groupName !== ``) {
+                  if (!temp[groupName]) {
+                    temp[groupName] = {
+                      x: [],
+                      y: [],
+                      text: [],
+                      mode: 'markers',
+                      type: 'scattergl',
+                      marker: {
+                        size: 6,
+                        line: {
+                          width: 1,
+                          color: 'rgba(0,0,0,0.01)',
+                        }
+                      },
+                      name: groupName,
+                      hoverinfo: 'text',
+                      yaxis: 'y',
+                      visible: true,
+                      data: [],
+
 
                     }
                     if (!this.settings.settings.legendRename[groupName]) {
@@ -197,7 +249,7 @@ export class VariantPlotComponent {
             y: [],
             mode: 'markers',
             type: 'scattergl',
-            marker: { size: 12, color: this.settings.settings.color_map[v.pathogenicity + " only in Alphamissense"] },
+            marker: { size: 6, color: this.settings.settings.color_map[v.pathogenicity + " only in Alphamissense"] },
             name: v.pathogenicity + " only in Alphamissense",
             hovermode: false,
             hoverinfo: 'skip',
@@ -228,7 +280,7 @@ export class VariantPlotComponent {
       y: [],
       mode: 'markers',
       type: 'scattergl',
-      marker: { size: 12, opacity: 0.01 },
+      marker: { size: 6, opacity: 0.01 },
       name: "domain",
       hovermode: false,
       hoverinfo: 'skip',
@@ -315,7 +367,10 @@ export class VariantPlotComponent {
     let colorCount = 0
     for (const key of this.settings.settings.legendOrder) {
       if (temp[key]) {
-        if (key in this.settings.settings.color_map){
+        if (key in this.settings.settings.specialHighlight) {
+          temp[key].marker.color = this.settings.settings.specialHighlight[key].color.slice()
+        }
+        else if (key in this.settings.settings.color_map){
           temp[key].marker.color = this.settings.settings.color_map[key]
           if (this.defaultColorList[colorCount] === this.settings.settings.color_map[key]) {
             colorCount++
@@ -506,5 +561,36 @@ export class VariantPlotComponent {
         this.graphLayout.annotations = [...this.graphLayout.annotations]
       }
     })
+  }
+
+  openHighlightDatasetSelection() {
+    const ref = this.dialog.open(HighlightDatasetsComponent, {disableClose: true})
+    ref.componentInstance.datasets = Object.keys(this.settings.settings.importedFile)
+    ref.afterClosed().subscribe((data) => {
+      if (data) {
+        for (const d of data) {
+          this.settings.settings.specialHighlight[d] = {highlight: false, color:"rgba(0,0,0,1)"}
+        }
+        for (const i in this.settings.settings.specialHighlight) {
+          if (!data.includes(i)) {
+            delete this.settings.settings.specialHighlight[i]
+          }
+        }
+        this.highlightDatalabels = data
+        this.drawGraph()
+      }
+    })
+  }
+
+  updateHighlightColor(event: string, dataset: string) {
+    this.settings.settings.specialHighlight[dataset].color = event
+    this.drawGraph()
+  }
+
+  updateHighlightedData(event: MatSelectionListChange) {
+    for (const e of event.options) {
+      this.settings.settings.specialHighlight[e.value].highlight = e.selected
+    }
+    this.drawGraph()
   }
 }

@@ -10,20 +10,51 @@
         <mat-card-title>Variant Plot</mat-card-title>
         <mat-card-subtitle>The following plot combine Alphamissense data and user input</mat-card-subtitle>
       </div>
+      <div style="flex-grow: 1">
+        <mat-grid-list cols="3">
+          <mat-grid-tile *ngFor="let h of highlightDatalabels">
+            {{h}}
+          </mat-grid-tile>
+        </mat-grid-list>
+      </div>
     </div>
   </mat-card-header>
   <mat-card-content>
-    <div>
-      <form [formGroup]="form">
-        <mat-checkbox formControlName="showbackground">
-          Show alphamissense only background data point
-        </mat-checkbox>
-      </form>
-
+    <div style="display: flex">
+      <div  style="flex-grow: 3">
+        <plotly-plot [config]="config" [data]="graphData" [layout]="graphLayout" [updateOnDataChange]="true" [updateOnLayoutChange]="true"
+                     [useResizeHandler]="true" (legendClick)="legendClickHandler($event)" (plotlyClick)="clickHandler($event)"
+        ></plotly-plot>
+      </div>
     </div>
-    <plotly-plot [config]="config" [data]="graphData" [layout]="graphLayout" [updateOnDataChange]="true" [updateOnLayoutChange]="true"
-                 [useResizeHandler]="true" (legendClick)="legendClickHandler($event)" (plotlyClick)="clickHandler($event)"
-    ></plotly-plot>
+    <div style="display: flex">
+      <div *ngIf="highlightDatalabels.length > 0" style="flex-grow: 3; display: flex">
+        <section>
+          Highlight Specific Datasets
+          <mat-selection-list style="align-self: flex-end" (selectionChange)="updateHighlightedData($event)">
+            <mat-list-option *ngFor="let h of highlightDatalabels" [value]="h" [selected]="this.settings.settings.specialHighlight[h].highlight">
+              <div style="display: flex">
+                <div style="padding-right: 20px">
+                  <ngx-colors (change)="updateHighlightColor($event, h)" ngx-colors-trigger [(ngModel)]="settings.settings.specialHighlight[h].color"></ngx-colors>
+                </div>
+                <div style="padding-top: 5px">
+                  {{h}}
+                </div>
+              </div>
+            </mat-list-option>
+          </mat-selection-list>
+        </section>
+      </div>
+      <form [formGroup]="form" style="flex-grow: 1">
+        <section>
+          Background Data Points
+          <mat-checkbox formControlName="showbackground" >
+            Show alphamissense only background data points
+          </mat-checkbox>
+        </section>
+
+      </form>
+    </div>
   </mat-card-content>
 </mat-card>
 
@@ -34,4 +65,5 @@
   <button mat-menu-item (click)="openColorPicker()">Legend Color Editor</button>
   <button mat-menu-item (click)="openCustomDomains()">Domains Editor</button>
   <button mat-menu-item (click)="openAnnotationEditor()">Annotation Editor</button>
+  <button mat-menu-item (click)="openHighlightDatasetSelection()">Highlight Datasets</button>
 </mat-menu>

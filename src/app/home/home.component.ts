@@ -205,7 +205,6 @@ export class HomeComponent implements AfterViewInit{
     this.snackbar.open("Downloading Alphamissense data for "+initialSettings.protein, "OK", {duration: 2000})
     req.then((data) => {
       if (data) {
-        console.log(data)
         this.results = data.results
         this.settings.settings = new Settings()
         for (const i in initialSettings.importedFile) {
@@ -223,19 +222,16 @@ export class HomeComponent implements AfterViewInit{
           const form = this.settings.settings.importedFile[i].form
           let df = data.where(row => row[form.variant] !== "").bake()
           if (this.settings.settings.filter[i]) {
-            console.log(i)
-            console.log(this.settings.settings.filter[i])
             for (const f of this.settings.settings.filter[i]){
-              console.log(f)
               df = this.filterData(f, df)
             }
           }
           this.data.currentData[form.name] = df
         }
-        console.log(this.results)
         this.filteredData = this.results[0].variants.filter((row: Variant) => {
           return this.settings.settings.selection[`${row.original}${row.position}${row.mutated}`] !== undefined
         })
+        this.data.reDrawTrigger.next(true)
       }
     })
   }

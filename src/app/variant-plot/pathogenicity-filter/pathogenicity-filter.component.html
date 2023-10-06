@@ -5,7 +5,7 @@
     <ul>
       <ng-container *ngFor="let f of filterObjects">
         <li *ngIf="f.dataset === k">
-          <mat-checkbox color="primary" [(ngModel)]="f.status">
+          <mat-checkbox color="primary" [(ngModel)]="f.status" [disabled]="settings.settings.specialHighlight[k]">
             {{f.pathogenicity}}
           </mat-checkbox>
         </li>

@@ -18,7 +18,7 @@ export class PathogenicityFilterComponent {
     }
   }
 
-  constructor() {
+  constructor(public settings: SettingsService) {
 
 
   }

@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Select Highlight Datasets</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field>
+      <mat-label>
+        Datasets
+      </mat-label>
+      <mat-select formControlName="datasets" multiple>
+        <mat-option *ngFor="let o of datasets" [value]="o">
+          {{o}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="form.value.datasets" cdkFocusInitial>Save</button>
+</div>

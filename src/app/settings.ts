@@ -39,6 +39,7 @@ export class Settings {
   showbackground: boolean = true
   selection: any = {}
   annotations: any = {}
+  specialHighlight: any = {}
   removeDataset(dataset: string) {
     delete this.importedFile[dataset]
     delete this.filter[dataset]
@@ -92,7 +93,7 @@ export class Settings {
   }
 
   removeUserSelection(selection: string) {
-    delete this.selection[selection]
+
     const pos = this.userSelection.indexOf(selection)
     if (pos > -1) {
       this.userSelection.splice(pos, 1)
@@ -117,6 +118,10 @@ export class Settings {
         for (const mut in this.selected[pos][orig]) {
           if (this.selected[pos][orig][mut][selection]) {
             delete this.selected[pos][orig][mut][selection]
+          }
+          if (Object.keys(this.selected[pos][orig][mut]).length === 0) {
+            delete this.selected[pos][orig][mut]
+            delete this.selection[`${orig}${pos}${mut}`]
           }
         }
       }

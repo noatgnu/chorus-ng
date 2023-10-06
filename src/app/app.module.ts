@@ -47,6 +47,8 @@ import { DataRenameDialogComponent } from './data-rename-dialog/data-rename-dial
 import { DataFindOverlapComponent } from './data-find-overlap/data-find-overlap.component';
 import { UserSelectionManagementComponent } from './user-selection-management/user-selection-management.component';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import { HighlightDatasetsComponent } from './variant-plot/highlight-datasets/highlight-datasets.component';
+import {MatGridListModule} from "@angular/material/grid-list";
 
 
 PlotlyModule.plotlyjs = PlotlyJS;
@@ -71,43 +73,45 @@ PlotlyModule.plotlyjs = PlotlyJS;
     AnnotationEditorComponent,
     DataRenameDialogComponent,
     DataFindOverlapComponent,
-    UserSelectionManagementComponent
+    UserSelectionManagementComponent,
+    HighlightDatasetsComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        PlotlyModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatButtonModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatCardModule,
-        MatInputModule,
-        MatDialogModule,
-        MatListModule,
-        CdkDropList,
-        CdkDrag,
-        MatMenuModule,
-        MatSelectModule,
-        MatSnackBarModule,
-        MatCheckboxModule,
-        NgxColorsModule,
-        MatSidenavModule,
-        MatExpansionModule,
-        MatLegacyChipsModule,
-        MatChipsModule,
-        NgOptimizedImage,
-        ServiceWorkerModule.register('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            // Register the ServiceWorker as soon as the application is stable
-            // or after 30 seconds (whichever comes first).
-            registrationStrategy: 'registerWhenStable:30000'
-        }),
-        MatProgressBarModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    PlotlyModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatCardModule,
+    MatInputModule,
+    MatDialogModule,
+    MatListModule,
+    CdkDropList,
+    CdkDrag,
+    MatMenuModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    MatCheckboxModule,
+    NgxColorsModule,
+    MatSidenavModule,
+    MatExpansionModule,
+    MatLegacyChipsModule,
+    MatChipsModule,
+    NgOptimizedImage,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
+    MatProgressBarModule,
+    MatGridListModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })
