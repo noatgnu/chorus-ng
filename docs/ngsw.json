@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1696605117392,
+  "timestamp": 1696606124339,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -30,9 +30,6 @@
       },
       "urls": [
         "/assets/ACMG.MDSGene.PDBrowser.gnomAD.json",
-        "/assets/ACMG.MDSGene.PDBrowser.gnomAD1.json",
-        "/assets/ACMG.MDSGene.PDBrowser.gnomAD2.json",
-        "/assets/ACMG.MDSGene.PDBrowser.gnomAD3.json",
         "/assets/MDSGene.gnomAd.json",
         "/assets/MDSGene.pdbrowser.json",
         "/assets/icons/icon-128x128.png",
@@ -51,10 +48,7 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/assets/ACMG.MDSGene.PDBrowser.gnomAD.json": "2084a8266a7ba40a7ef6589ed8861ea4b83acaa1",
-    "/assets/ACMG.MDSGene.PDBrowser.gnomAD1.json": "6469fb74041eef53f45d360378a2f5b7bffdc795",
-    "/assets/ACMG.MDSGene.PDBrowser.gnomAD2.json": "fce7d878f9026f5756da0d5cfb8eef35fdffade4",
-    "/assets/ACMG.MDSGene.PDBrowser.gnomAD3.json": "bb68bc07f0f69c3621cd58acb91266bae66ddeef",
+    "/assets/ACMG.MDSGene.PDBrowser.gnomAD.json": "67e63fe3fd854c6b68fc3a38d4d8a20d94853b0c",
     "/assets/MDSGene.gnomAd.json": "c2c896a6cf7ad44a43ecd0ddd597609e7dfd1891",
     "/assets/MDSGene.pdbrowser.json": "5d59f024440c3a8585b389d4f2eb09fd85b80a31",
     "/assets/icons/icon-128x128.png": "b1f06c7d714abb4a0cc4d1f7c954feb26826e4c4",
