@@ -289,6 +289,11 @@ export class HomeComponent implements AfterViewInit{
         this.filteredData = this.results[0].variants.filter((row: Variant) => {
           return this.settings.settings.selection[`${row.original}${row.position}${row.mutated}`] !== undefined
         })
+        // sort filtered data by selection order
+        const selectionOrder = Object.keys(this.settings.settings.selection)
+        this.filteredData.sort((a: Variant, b: Variant) => {
+          return selectionOrder.indexOf(`${b.original}${b.position}${b.mutated}`) - selectionOrder.indexOf(`${a.original}${a.position}${a.mutated}`)
+        })
         console.log(this.filteredData)
       }
     }

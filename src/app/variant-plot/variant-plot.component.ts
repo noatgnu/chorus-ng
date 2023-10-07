@@ -35,6 +35,7 @@ export class VariantPlotComponent {
     "#000000"
   ]
   graphLayout: any = {
+    hovermode: 'closest',
     traceorder: 'normal',
     title: 'Variant Plot',
     autosize: true,
@@ -71,6 +72,10 @@ export class VariantPlotComponent {
     annotations: [],
     legend: {
       orientation: 'h',
+      font: {
+        size: 15,
+        color: '#000000',
+      }
     }
   }
   config: any = {
@@ -158,7 +163,7 @@ export class VariantPlotComponent {
                       y: [],
                       text: [],
                       mode: 'markers',
-                      type: 'scattergl',
+                      type: 'scatter',
                       marker: {
                         size: 6,
                         line: {
@@ -187,7 +192,7 @@ export class VariantPlotComponent {
                   }
                   temp[groupName].x.push(v.position)
                   temp[groupName].y.push(v.score)
-                  temp[groupName].text.push(hovertext)
+                  temp[groupName].text.push(hovertext.slice())
                   temp[groupName].data.push(v)
                 }
               } else if (this.settings.settings.pathogenicityFilter[d][this.settings.settings.selected[v.position][v.original][v.mutated][d].pathogenicity] === true) {
@@ -199,7 +204,7 @@ export class VariantPlotComponent {
                       y: [],
                       text: [],
                       mode: 'markers',
-                      type: 'scattergl',
+                      type: 'scatter',
                       marker: {
                         size: 6,
                         line: {
@@ -489,6 +494,8 @@ export class VariantPlotComponent {
       const selected: VariantSimple[] = []
       for (const p of event["points"]) {
         const data: any = p.data.data[p.pointNumber]
+        console.log(data)
+        console.log(p.data.text[p.pointNumber])
         if (this.settings.settings.selected[data.position]) {
           if (this.settings.settings.selected[data.position][data.original]) {
             if (this.settings.settings.selected[data.position][data.original][data.mutated]) {
@@ -592,5 +599,11 @@ export class VariantPlotComponent {
       this.settings.settings.specialHighlight[e.value].highlight = e.selected
     }
     this.drawGraph()
+  }
+
+  clearAllUserSelection() {
+    this.settings.settings.removeAllUserSelection()
+    this.drawGraph()
+    this.dataService.updateTrigger.next(true)
   }
 }

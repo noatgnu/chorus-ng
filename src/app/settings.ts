@@ -127,4 +127,11 @@ export class Settings {
       }
     }
   }
+
+  removeAllUserSelection() {
+    const userSelection = [...this.userSelection]
+    for (const selection of userSelection) {
+      this.removeUserSelection(selection)
+    }
+  }
 }
