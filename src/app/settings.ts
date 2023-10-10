@@ -133,5 +133,6 @@ export class Settings {
     for (const selection of userSelection) {
       this.removeUserSelection(selection)
     }
+
   }
 }

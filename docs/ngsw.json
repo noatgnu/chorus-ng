@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1696933949258,
+  "timestamp": 1696943315862,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -49,7 +49,7 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/assets/ACMG.MDSGene.PDBrowser.gnomAD.json": "1382f4353eabd2c51eaba13a93fcff17b5be4387",
+    "/assets/ACMG.MDSGene.PDBrowser.gnomAD.json": "eeb6b6ab07bfb3cc5f9f13475d0e95d23b6a7286",
     "/assets/ACMG.MDSGene.PDBrowser.gnomAD2.json": "67e63fe3fd854c6b68fc3a38d4d8a20d94853b0c",
     "/assets/MDSGene.gnomAd.json": "c2c896a6cf7ad44a43ecd0ddd597609e7dfd1891",
     "/assets/MDSGene.pdbrowser.json": "5d59f024440c3a8585b389d4f2eb09fd85b80a31",
