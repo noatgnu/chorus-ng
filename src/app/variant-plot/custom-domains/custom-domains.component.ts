@@ -10,7 +10,7 @@ export class CustomDomainsComponent {
 
   addDomain() {
     this.domains.push({
-      name: "",
+      domain: "",
       start: 0,
       end: 0
     })
