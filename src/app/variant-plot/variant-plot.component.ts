@@ -476,7 +476,7 @@ export class VariantPlotComponent {
 
     ref.componentInstance.domains = this.settings.settings.domains.map((d: any) => {
       return {
-        name: d["domain"].slice(),
+        domain: d["domain"].slice(),
         start: d["start"],
         end: d["end"]
       }
